@@ -27,6 +27,15 @@
     <ClInclude Include="BobClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GameEntry.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CSudoku.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="T3DLIB2.cpp">
@@ -39,6 +48,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CSudoku.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

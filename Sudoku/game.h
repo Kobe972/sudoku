@@ -1,7 +1,5 @@
 #pragma once
-#include"pch.h"
-#include"BobClass.h"
-#include "GUI.h"
+#include"CSudoku.h"
 #include <Windows.h>
 #include<math.h>
 //then define game states
@@ -41,8 +39,10 @@ public:
 	void Preface();
 	void ShowMenu();
 	void Create_Sudoku();
+	void SinglePlay();
 	void Help();
 	bool ButtonReturn();
 private:
 	HWND m_hWnd;
+	CSudoku Sudoku;
 };

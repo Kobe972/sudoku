@@ -142,13 +142,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BobClass.h" />
+    <ClInclude Include="CSudoku.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="GameEntry.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="T3DLIB2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BobClass.cpp" />
+    <ClCompile Include="CSudoku.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="sudoku.cpp" />
     <ClCompile Include="T3DLIB2.cpp" />
   </ItemGroup>

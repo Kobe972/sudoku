@@ -17,6 +17,7 @@ void CGame::GameInit()
     button[ISINGLE_MODE].Create(ISINGLE_MODE, 271, 63, 250, 200, "button1");
     button[IHELP].Create(IHELP, 271, 63, 250, 280, "button2");
     button[IRETURN].Create(IRETURN, 80, 80, 0, 0, "return");
+    Sudoku.GameInit();
     DInput_Init();
     DInput_Init_Keyboard();
     DInput_Init_Mouse();
@@ -37,6 +38,8 @@ void CGame::GameMain()
     case HELP:
         Help();
         break;
+    case SINGLE_PLAY:
+        SinglePlay();
     default:
         break;
     }
@@ -159,6 +162,10 @@ void CGame::ProcessButtonMsg()
     case HELP:
         if (ButtonReturn()) SetGameState(MAINMENU);
         break;
+    case SINGLE_PLAY:
+        if (ButtonReturn())
+            SetGameState(MAINMENU);
+        break;
     default:
         break;
     }
@@ -204,8 +211,14 @@ void CGame::ShowMenu()
 
 void CGame::Create_Sudoku()
 {
-    MessageBox(main_window_handle, "Function CreateSudoku() is not defined!", "Attention", MB_OK);
-    SetGameState(MAINMENU);
+    Sudoku.Create();
+    SetGameState(SINGLE_PLAY);
+}
+
+void CGame::SinglePlay()
+{
+    Sudoku.CheckFocus();
+    Sudoku.Draw();
 }
 
 void CGame::Help()
