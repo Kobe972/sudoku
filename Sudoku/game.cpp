@@ -1,4 +1,5 @@
 #include"game.h"
+extern CButton button[20];
 EXTERN_INPUT_DATA()
 inline void CGame::SetGameState(CGame::EGameState eGameStateCurrent)
 {
@@ -12,8 +13,10 @@ inline void CGame::SetWindowHandle(HWND hwnd)
 void CGame::GameInit()
 {
     SetGameState(PREFACE);
-    //SetGameState(WAITTOEND);
     //load buttons in main menu
+    button[ISINGLE_MODE].Create(ISINGLE_MODE, 271, 63, 250, 200, "button1");
+    button[IHELP].Create(IHELP, 271, 63, 250, 280, "button2");
+    button[IRETURN].Create(IRETURN, 80, 80, 0, 0, "return");
     DInput_Init();
     DInput_Init_Keyboard();
     DInput_Init_Mouse();
@@ -28,6 +31,12 @@ void CGame::GameMain()
     case MAINMENU:
         ShowMenu();
         break;
+    case CREATE_SU:
+        Create_Sudoku();
+        break;
+    case HELP:
+        Help();
+        break;
     default:
         break;
     }
@@ -36,7 +45,7 @@ void CGame::GameMain()
     if (hw == main_window_handle)
     {
         GetCurMsg();//include mouse and keyboard.understand "cur" as "current",not "cursor"
-        //ProcessButtonMsg();
+        ProcessButtonMsg();
         //ProcessCheckBoxMsg();
         ProcessKeyMsg();
         //ProcessSerMessage();
@@ -111,59 +120,51 @@ void CGame::GetCurMsg()
     DInput_Read_Keyboard();
     return;
 }
-/*
+
 bool CGame::ButtonReturn() {
     button[IRETURN].Check();
     if (button[IRETURN].m_state == BSTATEUP) {
-        if (!g_IsSilent) mciSendString("play .\\sound\\click\\0.wav", NULL, 0, NULL);
         button[IRETURN].m_state = BSTATENORMAL;
         return true;
     }
     return false;
 }
 
+
 void CGame::ProcessButtonMsg()
 {
     switch (m_eGameState)
     {
     case MAINMENU:
-        for (int i = ISINGLE_MODE; i <= IREGISTRY; i++)
+        for (int i = ISINGLE_MODE; i <= IHELP; i++)
         {
             button[i].Check();
             if (button[i].m_state == BSTATEUP)
             {
                 switch (i)
                 {
+                case ISINGLE_MODE:
+                    SetGameState(CREATE_SU);
+                    break;
+                case IHELP:
+                    SetGameState(HELP);
+                    break;
                 default:
                     break;
                 }
                 button[i].m_state = BSTATENORMAL;
             }
         }
-        if (m_loggedin)
-        {
-            button[ISEE_RANKS].Check();
-            if (button[ISEE_RANKS].m_state == BSTATEUP)
-            {
-                Msg clr;
-                clr.ID = RANK_RQ;
-                g_Send.push(clr);
-                if (!g_IsSilent) mciSendString("play .\\sound\\click\\0.wav", NULL, 0, NULL);
-                SetGameState(SHOW_RANK);
-                button[ISEE_RANKS].m_state = BSTATENORMAL;
-            }
-        }
         break;
-    case SETTINGS:
-        if (ButtonReturn())
-            m_eGameState = MAINMENU;
+    case HELP:
+        if (ButtonReturn()) SetGameState(MAINMENU);
         break;
     default:
         break;
     }
     return;
 }
-
+/*
 void CGame::ProcessCheckBoxMsg()
 {
     switch (m_eGameState)
@@ -175,8 +176,7 @@ void CGame::ProcessCheckBoxMsg()
         break;
     }
     return;
-}
-*/
+}*/
 void CGame::ProcessKeyMsg()
 {
     switch (m_eGameState)
@@ -197,7 +197,24 @@ void CGame::ShowMenu()
     bitmap->Load_File(".\\background\\MainMenu.bmp");
     DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });
     bitmap->Unload_File();
+    button[ISINGLE_MODE].Draw();
+    button[IHELP].Draw();
     return;
+}
+
+void CGame::Create_Sudoku()
+{
+    MessageBox(main_window_handle, "Function CreateSudoku() is not defined!", "Attention", MB_OK);
+    SetGameState(MAINMENU);
+}
+
+void CGame::Help()
+{
+    BITMAP_FILE_PTR bitmap = new BITMAP_FILE;
+    bitmap->Load_File(".\\background\\Help.bmp");
+    DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });
+    bitmap->Unload_File();
+    button[IRETURN].Draw();
 }
 
 CGame::~CGame()

@@ -1,6 +1,7 @@
 #pragma once
 #include"pch.h"
 #include"BobClass.h"
+#include "GUI.h"
 #include <Windows.h>
 #include<math.h>
 //then define game states
@@ -9,6 +10,7 @@
 #define CREATE_SU (EGameState::eGameStateCreateSudoku)
 #define SINGLE_PLAY (EGameState::eGameStateSinglePlayer)
 #define SINGLE_END (EGameState::eGameStateSingleEnd)
+#define HELP (EGameState::eGameStateHelp)
 
 #pragma warning
 EXTERN_BOB_OBJECTS()
@@ -24,7 +26,8 @@ private:
 	bool m_state;
 public:
 	enum EGameState {
-		eGameStatePreface=0,eGameStateMainMenu = 1, eGameStateCreateSudoku, eGameStateSinglePlayer, eGameStateSingleEnd
+		eGameStatePreface=0,eGameStateMainMenu = 1, eGameStateCreateSudoku, eGameStateSinglePlayer, eGameStateSingleEnd,
+		eGameStateHelp
 	};
 	//GameState 望文生义
 private:
@@ -34,8 +37,12 @@ public:
 	inline void SetWindowHandle(HWND hwnd);
 	void GetCurMsg();
 	void ProcessKeyMsg();
+	void ProcessButtonMsg();
 	void Preface();
 	void ShowMenu();
+	void Create_Sudoku();
+	void Help();
+	bool ButtonReturn();
 private:
 	HWND m_hWnd;
 };
