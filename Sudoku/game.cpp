@@ -40,6 +40,10 @@ void CGame::GameMain()
         break;
     case SINGLE_PLAY:
         SinglePlay();
+        break;
+    case SINGLE_END:
+        SingleEnd();
+        break;
     default:
         break;
     }
@@ -188,6 +192,9 @@ void CGame::ProcessKeyMsg()
 {
     switch (m_eGameState)
     {
+    case SINGLE_PLAY:
+        Sudoku.CheckKey();
+        break;
     //case SELECT_HARDNESS:
         //inputbox[IHARDSHIPBOX].Check();
         //break;
@@ -219,6 +226,14 @@ void CGame::SinglePlay()
 {
     Sudoku.CheckFocus();
     Sudoku.Draw();
+    if (Sudoku.m_win) SetGameState(SINGLE_END);
+}
+
+void CGame::SingleEnd()
+{
+    MessageBox(main_window_handle, "You win!", "Congratulations", MB_OK);
+    SetGameState(MAINMENU);
+    return;
 }
 
 void CGame::Help()

@@ -40,6 +40,7 @@ public:
 	void ShowMenu();
 	void Create_Sudoku();
 	void SinglePlay();
+	void SingleEnd();
 	void Help();
 	bool ButtonReturn();
 private:
