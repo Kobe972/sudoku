@@ -335,8 +335,8 @@ POINT CSudoku::Get_Grid_By_Coor(int x, int y)
 	int startx = x - (800 - 9*m_Width) / 2;
 	int starty = y - (600 - 9*m_Height) / 2;
 	POINT ret;
-	ret.x = startx / m_Width;
-	ret.y = starty / m_Height;
+	ret.x = startx<0?-1:startx / m_Width;
+	ret.y = starty<0?-1:starty / m_Height;
 	return ret;
 }
 
