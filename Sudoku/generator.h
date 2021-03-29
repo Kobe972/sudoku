@@ -28,4 +28,6 @@ public:
     void countSoln(int& number);
     void genPuzzle();
     void CreateSudoku();
+    void calculateDifficulty();
+    int  branchDifficultyScore();
 };

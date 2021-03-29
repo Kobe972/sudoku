@@ -22,6 +22,7 @@ public:
 	~CGame();
 private:
 	bool m_state;
+	bool g_IsSilent;
 public:
 	enum EGameState {
 		eGameStatePreface=0,eGameStateMainMenu = 1, eGameStateCreateSudoku, eGameStateSinglePlayer, eGameStateSingleEnd,
@@ -36,6 +37,7 @@ public:
 	void GetCurMsg();
 	void ProcessKeyMsg();
 	void ProcessButtonMsg();
+	void ProcessCheckBoxMsg();
 	void Preface();
 	void ShowMenu();
 	void Create_Sudoku();

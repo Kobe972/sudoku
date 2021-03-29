@@ -12,12 +12,8 @@
 #define BSTATEUP 3
 
 //checkbox ID
-#define JSILENCE 1
-//checkbox environment variable
-#define JSILENCE_X 70 
-#define JSILENCE_Y 200
-#define JSILENCE_WIDTH 116
-#define JSILENCE_HEIGHT 39
+#define J_SILENCE 0
+
 //checkbox states
 #define CSTATEON 0
 #define CSTATEOFF 1

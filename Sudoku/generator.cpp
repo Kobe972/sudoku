@@ -183,6 +183,86 @@ void Generator::genPuzzle()
         }
     }
 }
+int Generator::branchDifficultyScore()
+{
+    int emptyPositions = -1;
+    int tempGrid[9][9];
+    int sum = 0;
+
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            tempGrid[i][j] = this->grid[i][j];
+        }
+    }
+
+    while (emptyPositions != 0)
+    {
+        vector<vector<int> > empty;
+
+        for (int i = 0; i < 81; i++)
+        {
+            if (tempGrid[(int)(i / 9)][(int)(i % 9)] == 0)
+            {
+                vector<int> temp;
+                temp.push_back(i);
+
+                for (int num = 1; num <= 9; num++)
+                {
+                    if (isSafe(tempGrid, i / 9, i % 9, num))
+                    {
+                        temp.push_back(num);
+                    }
+                }
+
+                empty.push_back(temp);
+            }
+
+        }
+
+        if (empty.size() == 0)
+        {
+            cout << "Hello: " << sum << endl;
+            return sum;
+        }
+
+        int minIndex = 0;
+
+        int check = empty.size();
+        for (int i = 0; i < check; i++)
+        {
+            if (empty[i].size() < empty[minIndex].size())
+                minIndex = i;
+        }
+
+        int branchFactor = empty[minIndex].size();
+        int rowIndex = empty[minIndex][0] / 9;
+        int colIndex = empty[minIndex][0] % 9;
+
+        tempGrid[rowIndex][colIndex] = this->solnGrid[rowIndex][colIndex];
+        sum = sum + ((branchFactor - 2) * (branchFactor - 2));
+
+        emptyPositions = empty.size() - 1;
+    }
+
+    return sum;
+
+}
+void Generator::calculateDifficulty()
+{
+    int B = branchDifficultyScore();
+    int emptyCells = 0;
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            if (this->grid[i][j] == 0)
+                emptyCells++;
+        }
+    }
+    this->difficultyLevel = B * 100 + emptyCells;
+}
 
 void Generator::CreateSudoku()
 {

@@ -20,6 +20,7 @@ public:
 	int m_win;
 	time_t duration;//游戏时长
 	time_t start_time;
+	int m_difficulty;
 	int m_mode = 0;//整体输入模式，0表示正常模式，1表示角标模式
 	int g_mode[9][9];//各个单元格的输入模式
 	LPDIRECTDRAWSURFACE7 m_grid[3];

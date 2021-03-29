@@ -1,5 +1,6 @@
 #include "CSudoku.h"
 extern CButton button[20];
+extern CCheckBox checkbox[20];
 
 void CSudoku::GameInit()
 {
@@ -53,9 +54,12 @@ void CSudoku::Create()
 			}
 		}
 	}
+	checkbox[J_SILENCE].Draw();
 	DDraw_Flip();
 	Generator puzzle;
 	puzzle.CreateSudoku();
+	puzzle.calculateDifficulty();
+	m_difficulty = puzzle.difficultyLevel;
 	memcpy(m_Sudoku, puzzle.grid, sizeof(puzzle.grid));
 	for (int i = 0; i < 81; i++)
 	{
@@ -355,6 +359,7 @@ void CSudoku::Draw()
 			}
 		}
 	}
+	checkbox[J_SILENCE].Draw();
 	duration = (clock() - start_time) / 1000;
 	sprintf(out, "Game duration:%d:%d:%d", ((int)duration) / 3600, ((int)duration) % 3600 / 60, ((int)duration) % 60);
 	lpddsback->GetDC(&CurText.hdc);
@@ -362,7 +367,9 @@ void CSudoku::Draw()
 	CurText.Uself();
 	SetTextColor(CurText.hdc, RGB(0, 0, 0));
 	SetBkMode(CurText.hdc, TRANSPARENT);
-	TextOut(CurText.hdc, 590, 2, out, strlen(out));
+	TextOut(CurText.hdc, 490, 2, out, strlen(out));
+	sprintf(out, "Difficulty:%d/1000", m_difficulty);
+	TextOut(CurText.hdc, (800 - 9 * m_Width) / 2, 2, out, strlen(out));
 	lpddsback->ReleaseDC(CurText.hdc);
 }
 

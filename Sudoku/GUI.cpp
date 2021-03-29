@@ -83,8 +83,8 @@ void CCheckBox::Create(int ID, int width, int height, int x, int y, std::string 
 	m_ID = ID;
 	POINT position_in_offscreen;
 	DDCOLORKEY color_key;
-	color_key.dwColorSpaceHighValue = RGBBIT(0, 255, 255, 255);
-	color_key.dwColorSpaceLowValue = RGBBIT(0, 255, 255, 255);
+	color_key.dwColorSpaceHighValue = RGBBIT(0, 0, 0, 0);
+	color_key.dwColorSpaceLowValue = RGBBIT(0, 0, 0, 0);
 	for (int i = 0; i < 2; i++)m_Style[i] = (char*)malloc(30 * sizeof(char));
 	for (int i = 0; i < 2; i++)
 	{

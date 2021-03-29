@@ -1,5 +1,6 @@
 #include"game.h"
 extern CButton button[20];
+extern CCheckBox checkbox[20];
 EXTERN_INPUT_DATA()
 inline void CGame::SetGameState(CGame::EGameState eGameStateCurrent)
 {
@@ -12,11 +13,13 @@ inline void CGame::SetWindowHandle(HWND hwnd)
 }
 void CGame::GameInit()
 {
+    g_IsSilent = 0;
     SetGameState(PREFACE);
     //load buttons in main menu
     button[ISINGLE_MODE].Create(ISINGLE_MODE, 271, 63, 250, 200, "button1");
     button[IHELP].Create(IHELP, 271, 63, 250, 280, "button2");
     button[IRETURN].Create(IRETURN, 80, 80, 0, 0, "return");
+    checkbox[J_SILENCE].Create(J_SILENCE, 50, 50, 720, 2, "silence", 1);
     Sudoku.GameInit();
     DInput_Init();
     DInput_Init_Keyboard();
@@ -53,7 +56,7 @@ void CGame::GameMain()
     {
         GetCurMsg();//include mouse and keyboard.understand "cur" as "current",not "cursor"
         ProcessButtonMsg();
-        //ProcessCheckBoxMsg();
+        ProcessCheckBoxMsg();
         ProcessKeyMsg();
         //ProcessSerMessage();
     }
@@ -175,19 +178,13 @@ void CGame::ProcessButtonMsg()
     }
     return;
 }
-/*
+
 void CGame::ProcessCheckBoxMsg()
 {
-    switch (m_eGameState)
-    {
-    case SETTINGS:
-        checkbox[JSILENCE].Check();
-        g_IsSilent = !checkbox[JSILENCE].m_state;
-    default:
-        break;
-    }
+    checkbox[J_SILENCE].Check();
+    g_IsSilent = checkbox[J_SILENCE].m_state;
     return;
-}*/
+}
 void CGame::ProcessKeyMsg()
 {
     switch (m_eGameState)
@@ -213,6 +210,7 @@ void CGame::ShowMenu()
     bitmap->Unload_File();
     button[ISINGLE_MODE].Draw();
     button[IHELP].Draw();
+    checkbox[J_SILENCE].Draw();
     return;
 }
 
@@ -243,6 +241,7 @@ void CGame::Help()
     DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });
     bitmap->Unload_File();
     button[IRETURN].Draw();
+    checkbox[J_SILENCE].Draw();
 }
 
 CGame::~CGame()
