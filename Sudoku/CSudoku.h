@@ -1,6 +1,7 @@
 #include"pch.h"
 #include "GUI.h"
 #include"BobClass.h"
+#include"generator.h"
 #pragma once
 class CSudoku
 {

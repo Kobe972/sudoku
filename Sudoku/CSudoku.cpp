@@ -25,6 +25,42 @@ void CSudoku::Create()
 {
 	memset(m_Sudoku, 0, sizeof(m_Sudoku));
 	memset(m_const, 0, sizeof(m_const));
+	BITMAP_FILE_PTR bitmap = new BITMAP_FILE;//绘制背景
+	bitmap->Load_File(".\\background\\sky.bmp");
+	DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });
+	bitmap->Unload_File();
+	button[IRETURN].Draw();
+	char out[50];
+	CFont CurText;
+	//绘制网格
+	RECT coor = { 0,0,m_Width,m_Height }, boarder;
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)//i行j列
+		{
+			boarder.left = (800 - 9 * m_Width) / 2 + m_Width * j;
+			boarder.top = (600 - 9 * m_Height) / 2 + m_Height * i;
+			boarder.right = boarder.left + m_Width;
+			boarder.bottom = boarder.top + m_Height;
+			//绘制表格
+			if (i / 3 == j / 3 || i / 3 + j / 3 == 2)
+			{
+				lpddsback->Blt(&boarder, m_grid[0], &coor, DDBLT_WAIT, NULL);
+			}
+			else
+			{
+				lpddsback->Blt(&boarder, m_grid[1], &coor, DDBLT_WAIT, NULL);
+			}
+		}
+	}
+	DDraw_Flip();
+	Generator puzzle;
+	puzzle.CreateSudoku();
+	memcpy(m_Sudoku, puzzle.grid, sizeof(puzzle.grid));
+	for (int i = 0; i < 81; i++)
+	{
+		if (*(*m_Sudoku + i) != 0) *(*m_const + i) = 1;
+	}
 	start_time = clock();
 	duration = 0;
 	m_win = 0;
