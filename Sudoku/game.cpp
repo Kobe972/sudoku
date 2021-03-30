@@ -19,7 +19,7 @@ void CGame::GameInit()
     button[ISINGLE_MODE].Create(ISINGLE_MODE, 271, 63, 250, 200, "button1");
     button[IHELP].Create(IHELP, 271, 63, 250, 280, "button2");
     button[IRETURN].Create(IRETURN, 80, 80, 0, 0, "return");
-    checkbox[J_SILENCE].Create(J_SILENCE, 50, 50, 720, 2, "silence", 1);
+    checkbox[J_SILENCE].Create(J_SILENCE, 50, 50, 720, 2, "silence", 0);
     Sudoku.GameInit();
     DInput_Init();
     DInput_Init_Keyboard();
@@ -114,7 +114,11 @@ void CGame::Preface()
     {
         pref[1].Draw(lpddsback);
         if (counter >= 170)
+        {
             m_eGameState = MAINMENU;
+            mciSendString(std::string("open ").append(GetRandomBGMusic()).append(" alias bgmusic").c_str(), NULL, 0, NULL);
+            mciSendString("play  bgmusic repeat", NULL, 0, NULL);
+        }
         counter++;
     }
     if (keyboard_state[DIK_SPACE] & 0x80)
@@ -134,6 +138,7 @@ void CGame::GetCurMsg()
 bool CGame::ButtonReturn() {
     button[IRETURN].Check();
     if (button[IRETURN].m_state == BSTATEUP) {
+        if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
         button[IRETURN].m_state = BSTATENORMAL;
         return true;
     }
@@ -151,6 +156,7 @@ void CGame::ProcessButtonMsg()
             button[i].Check();
             if (button[i].m_state == BSTATEUP)
             {
+                if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
                 switch (i)
                 {
                 case ISINGLE_MODE:
@@ -181,8 +187,19 @@ void CGame::ProcessButtonMsg()
 
 void CGame::ProcessCheckBoxMsg()
 {
+    bool last = g_IsSilent;
     checkbox[J_SILENCE].Check();
     g_IsSilent = checkbox[J_SILENCE].m_state;
+    if (last == 1 && g_IsSilent == 0)
+    {
+        mciSendString(std::string("open ").append(GetRandomBGMusic()).append(" alias bgmusic").c_str(), NULL, 0, NULL);
+        mciSendString("play  bgmusic repeat", NULL, 0, NULL);
+    }
+    if (last == 0 && g_IsSilent == 1)
+    {
+        mciSendString("stop bgmusic", NULL, 0, NULL);
+        mciSendString("close bgmusic",NULL,0,NULL);
+    }
     return;
 }
 void CGame::ProcessKeyMsg()
@@ -250,4 +267,26 @@ CGame::~CGame()
     DInput_Read_Mouse();
     DInput_Shutdown();
     DDraw_Shutdown();
+}
+
+string GetRandomBGMusic()
+{
+    string path=".\\Sounds\\bgmusic";
+    vector<string> files;
+    srand((unsigned)time(NULL));
+    //文件句柄 
+    long   hFile = 0;
+    //文件信息 
+    struct  _finddata_t  fileinfo;
+    string p;
+    if ((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1)
+    {
+        do
+        {
+            if (!(fileinfo.attrib & _A_SUBDIR))
+                files.push_back(p.assign(path).append("\\").append(fileinfo.name));
+        } while (_findnext(hFile, &fileinfo) == 0);
+        _findclose(hFile);
+    }
+    return files[rand() % files.size()];
 }

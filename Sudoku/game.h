@@ -13,7 +13,7 @@
 #pragma warning
 EXTERN_BOB_OBJECTS()
 EXTERN_INPUT_DATA()
-
+string GetRandomBGMusic();
 class CGame
 {
 public:

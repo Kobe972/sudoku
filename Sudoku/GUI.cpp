@@ -97,8 +97,8 @@ void CCheckBox::Create(int ID, int width, int height, int x, int y, std::string 
 	boarder.top = y;
 	boarder.bottom = boarder.top + m_Height;
 	boarder.right = boarder.left + m_Width;
-	strcpy(m_Style[0], ("GUI\\checkbox\\" + filename + "_on" + ".bmp").c_str());
-	strcpy(m_Style[1], ("GUI\\checkbox\\" + filename + "_off" + ".bmp").c_str());
+	strcpy(m_Style[0], ("GUI\\checkbox\\" + filename + "_off" + ".bmp").c_str());
+	strcpy(m_Style[1], ("GUI\\checkbox\\" + filename + "_on" + ".bmp").c_str());
 	for (int i = 0; i < 2; i++) m_bitmap[i].Load_File(m_Style[i]);
 	for (int i = 0; i < 2; i++)
 	{

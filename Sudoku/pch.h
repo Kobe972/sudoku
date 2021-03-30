@@ -38,6 +38,7 @@
 #include"T3DLIB2.h"
 #pragma comment(lib, "ddraw.lib")
 #pragma comment(lib, "dxguid.lib")
+#pragma comment(lib,"winmm.lib")
 
 typedef unsigned short USHORT;
 typedef unsigned short WORD;
