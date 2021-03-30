@@ -10,6 +10,7 @@ public:
 	int m_Sudoku[9][9];//数独
 	int m_small[9][9][10];//角标
 	int m_const[9][9];//一开始就生成的数，不能改变
+	int m_ans[9][9];//答案
 	void GameInit();
 	void Create();
 	void CheckFocus();

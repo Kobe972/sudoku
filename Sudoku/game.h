@@ -9,6 +9,7 @@
 #define SINGLE_PLAY (EGameState::eGameStateSinglePlayer)
 #define SINGLE_END (EGameState::eGameStateSingleEnd)
 #define HELP (EGameState::eGameStateHelp)
+#define ANSWER (EGameState::eGameStateAns)
 
 #pragma warning
 EXTERN_BOB_OBJECTS()
@@ -26,7 +27,7 @@ private:
 public:
 	enum EGameState {
 		eGameStatePreface=0,eGameStateMainMenu = 1, eGameStateCreateSudoku, eGameStateSinglePlayer, eGameStateSingleEnd,
-		eGameStateHelp
+		eGameStateHelp,eGameStateAns
 	};
 	//GameState 望文生义
 private:
@@ -43,6 +44,7 @@ public:
 	void Create_Sudoku();
 	void SinglePlay();
 	void SingleEnd();
+	void ShowAnswer();
 	void Help();
 	bool ButtonReturn();
 private:

@@ -19,6 +19,7 @@ void CGame::GameInit()
     button[ISINGLE_MODE].Create(ISINGLE_MODE, 271, 63, 250, 200, "button1");
     button[IHELP].Create(IHELP, 271, 63, 250, 280, "button2");
     button[IRETURN].Create(IRETURN, 80, 80, 0, 0, "return");
+    button[IANSWER].Create(IANSWER, 130, 20, 335, 5, "answer");
     checkbox[J_SILENCE].Create(J_SILENCE, 50, 50, 720, 2, "silence", 0);
     Sudoku.GameInit();
     DInput_Init();
@@ -46,6 +47,9 @@ void CGame::GameMain()
         break;
     case SINGLE_END:
         SingleEnd();
+        break;
+    case ANSWER:
+        ShowAnswer();
         break;
     default:
         break;
@@ -176,6 +180,21 @@ void CGame::ProcessButtonMsg()
         if (ButtonReturn()) SetGameState(MAINMENU);
         break;
     case SINGLE_PLAY:
+        button[IANSWER].Check();
+        if (button[IANSWER].m_state == BSTATEUP)
+        {
+            if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
+            if (IDYES == MessageBox(main_window_handle, "Are you sure to give up?", "Attention", MB_YESNO))
+                SetGameState(ANSWER);
+            button[IANSWER].m_state = BSTATENORMAL;
+        }
+        if (ButtonReturn())
+        {
+            if (IDYES == MessageBox(main_window_handle, "Are you sure to give up?", "Attention", MB_YESNO))
+                SetGameState(MAINMENU);
+        }  
+        break;
+    case ANSWER:
         if (ButtonReturn())
             SetGameState(MAINMENU);
         break;
@@ -249,6 +268,60 @@ void CGame::SingleEnd()
     MessageBox(main_window_handle, "You win!", "Congratulations", MB_OK);
     SetGameState(MAINMENU);
     return;
+}
+
+void CGame::ShowAnswer()
+{
+    BITMAP_FILE_PTR bitmap = new BITMAP_FILE;//绘制背景
+    bitmap->Load_File(".\\background\\sky.bmp");
+    DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });
+    bitmap->Unload_File();
+    button[IRETURN].Draw();
+    checkbox[J_SILENCE].Draw();
+    char out[50];
+    CFont CurText;
+    //绘制网格
+    RECT coor = { 0,0,Sudoku.m_Width,Sudoku.m_Height }, boarder;
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)//i行j列
+        {
+            boarder.left = (800 - 9 * Sudoku.m_Width) / 2 + Sudoku.m_Width * j;
+            boarder.top = (600 - 9 * Sudoku.m_Height) / 2 + Sudoku.m_Height * i;
+            boarder.right = boarder.left + Sudoku.m_Width;
+            boarder.bottom = boarder.top + Sudoku.m_Height;
+            //绘制表格
+            if (i / 3 == j / 3 || i / 3 + j / 3 == 2)
+            {
+                lpddsback->Blt(&boarder, Sudoku.m_grid[0], &coor, DDBLT_WAIT, NULL);
+            }
+            else
+            {
+                lpddsback->Blt(&boarder, Sudoku.m_grid[1], &coor, DDBLT_WAIT, NULL);
+            }
+            //绘制数字
+            lpddsback->GetDC(&CurText.hdc);
+            CurText.SetType(Sudoku.m_Height / 6 * 5, Sudoku.m_Width / 12 * 5, 15);
+            CurText.Uself();
+            if (Sudoku.m_const[i][j] == 1) SetTextColor(CurText.hdc, RGB(0, 0, 0));
+            else SetTextColor(CurText.hdc, RGB(255, 0, 0));
+            SetBkMode(CurText.hdc, TRANSPARENT);
+            sprintf(out, "%d", Sudoku.m_ans[i][j]);
+            TextOut(CurText.hdc, boarder.left + Sudoku.m_Width / 24 * 7, boarder.top + Sudoku.m_Height / 12, out, strlen(out));
+            lpddsback->ReleaseDC(CurText.hdc);
+        }
+    }
+    lpddsback->GetDC(&CurText.hdc);
+    CurText.SetType(25, 9, 3);
+    CurText.Uself();
+    SetTextColor(CurText.hdc, RGB(0, 0, 0));
+    SetBkMode(CurText.hdc, TRANSPARENT);
+    sprintf(out, "Difficulty:%d/1000", Sudoku.m_difficulty);
+    CurText.SetType(25, 9, 5);
+    CurText.Uself();
+    TextOut(CurText.hdc, (800 - 9 * Sudoku.m_Width) / 2, 2, out, strlen(out));
+    TextOut(CurText.hdc, 365, 5, "Solution", strlen("Solution"));
+    lpddsback->ReleaseDC(CurText.hdc);
 }
 
 void CGame::Help()

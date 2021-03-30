@@ -61,6 +61,7 @@ void CSudoku::Create()
 	puzzle.calculateDifficulty();
 	m_difficulty = puzzle.difficultyLevel;
 	memcpy(m_Sudoku, puzzle.grid, sizeof(puzzle.grid));
+	memcpy(m_ans, puzzle.solnGrid, sizeof(puzzle.solnGrid));
 	for (int i = 0; i < 81; i++)
 	{
 		if (*(*m_Sudoku + i) != 0) *(*m_const + i) = 1;
@@ -302,6 +303,7 @@ void CSudoku::Draw()
 	DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });
 	bitmap->Unload_File();
 	button[IRETURN].Draw();
+	button[IANSWER].Draw();
 	char out[50];
 	CFont CurText;
 	//»æÖÆÍø¸ñ
@@ -361,7 +363,7 @@ void CSudoku::Draw()
 	}
 	checkbox[J_SILENCE].Draw();
 	duration = (clock() - start_time) / 1000;
-	sprintf(out, "Game duration:%d:%d:%d", ((int)duration) / 3600, ((int)duration) % 3600 / 60, ((int)duration) % 60);
+	sprintf(out, "Time consuming:%d:%d:%d", ((int)duration) / 3600, ((int)duration) % 3600 / 60, ((int)duration) % 60);
 	lpddsback->GetDC(&CurText.hdc);
 	CurText.SetType(25, 9, 3);
 	CurText.Uself();

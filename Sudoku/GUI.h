@@ -5,6 +5,7 @@
 #define ISINGLE_MODE 0
 #define IHELP 1
 #define IRETURN 2
+#define IANSWER 3
 //button states
 #define BSTATENORMAL 0
 #define BSTATEON 1
