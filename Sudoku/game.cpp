@@ -273,6 +273,9 @@ void CGame::Create_Sudoku()
 
 void CGame::SinglePlay()
 {
+    Sudoku.duration = 17 * 60 + 57;
+    SetGameState(SINGLE_END);
+    return;
     Sudoku.CheckFocus();
     Sudoku.Draw();
     if (Sudoku.m_win) SetGameState(SINGLE_END);
@@ -292,8 +295,7 @@ void CGame::SingleEnd()
     int new_best=0,num=0;
     tmp.difficulty = Sudoku.m_difficulty;
     tmp.T_Consuming = Sudoku.duration;
-    if (3 * Sudoku.m_difficulty / Sudoku.duration >= 1) tmp.global = 100;
-    else tmp.global = 2 * Sudoku.m_difficulty * 100 / Sudoku.duration; 
+    tmp.global = 2 * Sudoku.m_difficulty * 100 / Sudoku.duration; 
     while (fread(&input, sizeof(RecordItem), 1, InFile))
     {
         if (input.global > new_best) new_best = input.global;
@@ -422,11 +424,11 @@ void CGame::ShowRecords()
     CurText.Uself();
     SetTextColor(CurText.hdc, RGB(0, 0, 0));
     SetBkMode(CurText.hdc, TRANSPARENT);
-    int spacex = 155,spacey=40;
+    int spacex = 180,spacey=40;
     TextOut(CurText.hdc, 85, 120, "Rank", strlen("Rank"));
-    TextOut(CurText.hdc, 85+spacex, 120, "Time Used", strlen("Time Used"));
+    TextOut(CurText.hdc, 85+spacex, 120, "Time Consumed", strlen("Time Consumed"));
     TextOut(CurText.hdc, 85+ spacex*2, 120 , "Difficulty", strlen("Difficulty"));
-    TextOut(CurText.hdc, 85 + spacex*3, 120, "Global Assessment", strlen("Global Assessment"));
+    TextOut(CurText.hdc, 85 + spacex*3, 120, "Score", strlen("Score"));
     for (int i = 0; i < m_RecordList.size(); i++)
     {
         TextOut(CurText.hdc, 85, 120 + (i + 1) * spacey,std::to_string(i+1).c_str(), strlen(std::to_string(i + 1).c_str()));
