@@ -273,9 +273,6 @@ void CGame::Create_Sudoku()
 
 void CGame::SinglePlay()
 {
-    Sudoku.duration = 17 * 60 + 57;
-    SetGameState(SINGLE_END);
-    return;
     Sudoku.CheckFocus();
     Sudoku.Draw();
     if (Sudoku.m_win) SetGameState(SINGLE_END);
