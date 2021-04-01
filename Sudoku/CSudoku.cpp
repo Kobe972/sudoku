@@ -363,7 +363,7 @@ void CSudoku::Draw()
 	}
 	checkbox[J_SILENCE].Draw();
 	duration = (clock() - start_time) / 1000;
-	sprintf(out, "Time consuming:%d:%d:%d", ((int)duration) / 3600, ((int)duration) % 3600 / 60, ((int)duration) % 60);
+	sprintf(out, "Time consuming:%02d:%02d:%02d", ((int)duration) / 3600, ((int)duration) % 3600 / 60, ((int)duration) % 60);
 	lpddsback->GetDC(&CurText.hdc);
 	CurText.SetType(25, 9, 3);
 	CurText.Uself();

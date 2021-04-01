@@ -17,7 +17,8 @@ void CGame::GameInit()
     SetGameState(PREFACE);
     //load buttons in main menu
     button[ISINGLE_MODE].Create(ISINGLE_MODE, 271, 63, 250, 200, "button1");
-    button[IHELP].Create(IHELP, 271, 63, 250, 280, "button2");
+    button[IREC].Create(IREC, 271, 63, 250, 280, "button3");
+    button[IHELP].Create(IHELP, 271, 63, 250, 360, "button2");
     button[IRETURN].Create(IRETURN, 80, 80, 0, 0, "return");
     button[IANSWER].Create(IANSWER, 130, 20, 335, 5, "answer");
     checkbox[J_SILENCE].Create(J_SILENCE, 50, 50, 720, 2, "silence", 0);
@@ -50,6 +51,12 @@ void CGame::GameMain()
         break;
     case ANSWER:
         ShowAnswer();
+        break;
+    case PRE_REC:
+        PrepareRecordList();
+        break;
+    case SHOW_REC:
+        ShowRecords();
         break;
     default:
         break;
@@ -155,7 +162,7 @@ void CGame::ProcessButtonMsg()
     switch (m_eGameState)
     {
     case MAINMENU:
-        for (int i = ISINGLE_MODE; i <= IHELP; i++)
+        for (int i = ISINGLE_MODE; i <= IREC; i++)
         {
             button[i].Check();
             if (button[i].m_state == BSTATEUP)
@@ -168,6 +175,9 @@ void CGame::ProcessButtonMsg()
                     break;
                 case IHELP:
                     SetGameState(HELP);
+                    break;
+                case IREC:
+                    SetGameState(PRE_REC);
                     break;
                 default:
                     break;
@@ -198,6 +208,10 @@ void CGame::ProcessButtonMsg()
         if (ButtonReturn())
             SetGameState(MAINMENU);
         break;
+    case SHOW_REC:
+        if (ButtonReturn())
+            SetGameState(MAINMENU);
+     break;
     default:
         break;
     }
@@ -246,6 +260,7 @@ void CGame::ShowMenu()
     bitmap->Unload_File();
     button[ISINGLE_MODE].Draw();
     button[IHELP].Draw();
+    button[IREC].Draw();
     checkbox[J_SILENCE].Draw();
     return;
 }
@@ -265,8 +280,38 @@ void CGame::SinglePlay()
 
 void CGame::SingleEnd()
 {
-    MessageBox(main_window_handle, "You win!", "Congratulations", MB_OK);
+    FILE* InFile;
+    if (_access(".\\data\\", 0) == -1)
+         _mkdir(".\\data");
+    if (_access(".\\data\\record.dat", 0) != -1)
+         InFile = fopen(".\\data\\record.dat", "rb+");
+    else
+         InFile = fopen(".\\data\\record.dat", "wb+");
+    FILE* OutFile = fopen(".\\data\\tmp.dat", "wb");
+    RecordItem tmp,input,tmplist[11];
+    int new_best=0,num=0;
+    tmp.difficulty = Sudoku.m_difficulty;
+    tmp.T_Consuming = Sudoku.duration;
+    if (3 * Sudoku.m_difficulty / Sudoku.duration >= 1) tmp.global = 100;
+    else tmp.global = 2 * Sudoku.m_difficulty * 100 / Sudoku.duration; 
+    while (fread(&input, sizeof(RecordItem), 1, InFile))
+    {
+        if (input.global > new_best) new_best = input.global;
+        tmplist[num ++] = input;
+    }
+    tmplist[num ++] = tmp;
+    qsort(tmplist, num, sizeof(RecordItem), comp);
+    for (int i = 0; i < min(10,num); i++)
+    {
+        fwrite(&tmplist[i], sizeof(RecordItem), 1, OutFile);
+    }
+    if(tmp.global>new_best) MessageBox(main_window_handle, "New best!", "Congratulations", MB_OK);
+    else MessageBox(main_window_handle, "You win!", "Congratulations", MB_OK);
     SetGameState(MAINMENU);
+    fclose(InFile);
+    fclose(OutFile);
+    DeleteFile(".\\data\\record.dat");
+    rename(".\\data\\tmp.dat", ".\\data\\record.dat");
     return;
 }
 
@@ -334,6 +379,65 @@ void CGame::Help()
     checkbox[J_SILENCE].Draw();
 }
 
+void CGame::PrepareRecordList()
+{
+    FILE* InFile;
+    if (_access(".\\data\\", 0) == -1)
+        _mkdir(".\\data");
+    if (_access(".\\data\\record.dat", 0) != -1)
+        InFile = fopen(".\\data\\record.dat", "rb");
+    else
+        InFile = fopen(".\\data\\record.dat", "wb+");
+    RecordItem* ite=new RecordItem;
+    RecordItem records[10];
+    m_RecordList.clear();
+    int num = 0;
+    while (fread(ite, sizeof(RecordItem), 1, InFile))
+    {
+        records[num++] = *ite;
+    }
+    int best=0;
+    qsort(records, num, sizeof(RecordItem), comp);
+    for (int i = 0; i < min(10, num); i++) //选出至多前十个
+    {
+        m_RecordList.push_back(records[i]);
+    }
+    SetGameState(SHOW_REC);
+    fclose(InFile);
+    return;
+}
+
+void CGame::ShowRecords()
+{
+    BITMAP_FILE_PTR bitmap = new BITMAP_FILE;
+    bitmap->Load_File(".\\background\\records.bmp");
+    DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });
+    bitmap->Unload_File();
+    button[IRETURN].Draw();
+    checkbox[J_SILENCE].Draw();
+    CFont CurText;
+    char out[20];
+    lpddsback->GetDC(&CurText.hdc);
+    CurText.SetType(20, 10, 10);
+    CurText.Uself();
+    SetTextColor(CurText.hdc, RGB(0, 0, 0));
+    SetBkMode(CurText.hdc, TRANSPARENT);
+    int spacex = 155,spacey=40;
+    TextOut(CurText.hdc, 85, 120, "Rank", strlen("Rank"));
+    TextOut(CurText.hdc, 85+spacex, 120, "Time Used", strlen("Time Used"));
+    TextOut(CurText.hdc, 85+ spacex*2, 120 , "Difficulty", strlen("Difficulty"));
+    TextOut(CurText.hdc, 85 + spacex*3, 120, "Global Assessment", strlen("Global Assessment"));
+    for (int i = 0; i < m_RecordList.size(); i++)
+    {
+        TextOut(CurText.hdc, 85, 120 + (i + 1) * spacey,std::to_string(i+1).c_str(), strlen(std::to_string(i + 1).c_str()));
+        sprintf(out, "%02d:%02d:%02d", (int)m_RecordList[i].T_Consuming / 3600, (int)m_RecordList[i].T_Consuming % 3600 / 60, (int)m_RecordList[i].T_Consuming % 60);
+        TextOut(CurText.hdc, 85 + spacex, 120+(i + 1) * spacey, out, strlen(out));
+        TextOut(CurText.hdc, 85 + spacex * 2, 120 + (i + 1) * spacey, std::to_string(m_RecordList[i].difficulty).c_str(), strlen(std::to_string(m_RecordList[i].difficulty).c_str()));
+        TextOut(CurText.hdc, 85 + spacex * 3, 120 + (i + 1) * spacey, std::to_string(m_RecordList[i].global).c_str(), strlen(std::to_string(m_RecordList[i].global).c_str()));
+    }
+    lpddsback->ReleaseDC(CurText.hdc);
+}
+
 CGame::~CGame()
 {
     DInput_Release_Keyboard();
@@ -362,4 +466,14 @@ string GetRandomBGMusic()
         _findclose(hFile);
     }
     return files[rand() % files.size()];
+}
+
+int comp(const void* p1, const void* p2)
+{
+    RecordItem i1 = *(RecordItem*)p1;
+    RecordItem i2 = *(RecordItem*)p2;
+    if (i1.global > i2.global) return -1;
+    else if (i1.global < i2.global) return 1;
+    else return 0;
+    return 0;
 }

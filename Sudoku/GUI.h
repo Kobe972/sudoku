@@ -6,6 +6,7 @@
 #define IHELP 1
 #define IRETURN 2
 #define IANSWER 3
+#define IREC 4
 //button states
 #define BSTATENORMAL 0
 #define BSTATEON 1
