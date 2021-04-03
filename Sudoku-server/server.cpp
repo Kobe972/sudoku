@@ -35,17 +35,23 @@ int main()
 	addrSrv.sin_port = htons(8000);
 	bind(serverSocket, (SOCKADDR*)&addrSrv, sizeof(SOCKADDR));
 	listen(serverSocket, 100);
+	bool display_players;
 	while (1)
 	{
-		system("cls");
-		Show_IP();
+		display_players = (clock() - clk >= 300);
+		if (display_players)
+		{
+			clk = clock();
+			system("cls");
+			Show_IP();
+		}
 		for (int i = 0; i < 1000; i++) //依次检测每个玩家，看是否连接
 		{
 			player[i].check();
 			if (!player[i].connected&&player[i].connect(serverSocket)) player[i].ID=i;
 		}
 		Msg mes;
-		printf("Player information above:\n");
+		if (display_players) printf("Player information above:\n");
 		for (int i = 0; i < 1000; i++)
 		{
 			player[i].check();
@@ -54,20 +60,23 @@ int main()
 				if (player[i].receive(&mes)) Process(mes, i); //接受玩家信息并进行处理
 				msglist.Send(); //将消息列表中的信息发送
 				//服务器界面显示玩家基本信息
-				printf("player[%d].name=%s\nplayer[%d].room=%d\nplayer[%d].best_score=%d\n", i, player[i].name,i,player[i].room,i,player[i].best_score);
-				switch (player[i].state)
+				if (display_players)
 				{
-				case LOBBY:
-					printf("player[%d].state=LOBBY\n", i);
-					break;
-				case WAITING:
-					printf("player[%d].state=WAITING\n", i);
-					break;
-				case PLAYING:
-					printf("player[%d].state=PLAYING\n", i);
-					break;
-				default:
-					break;
+					printf("player[%d].name=%s\nplayer[%d].room=%d\nplayer[%d].best_score=%d\n", i, player[i].name, i, player[i].room, i, player[i].best_score);
+					switch (player[i].state)
+					{
+					case LOBBY:
+						printf("player[%d].state=LOBBY\n", i);
+						break;
+					case WAITING:
+						printf("player[%d].state=WAITING\n", i);
+						break;
+					case PLAYING:
+						printf("player[%d].state=PLAYING\n", i);
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}
@@ -200,6 +209,7 @@ void Send_Rank(int dest)
 	mes.ID = RANK_ITEM;
 	for (int i = 0; i < min(10, Num_of_Players); i++) //选出至多前十个发送过去
 	{
+		if (info[i].best_consume == 0) continue;
 		mes.num[0] = info[i].best_consume;
 		mes.num[1] = info[i].best_difficulty;
 		mes.num[2] = info[i].best_score;
