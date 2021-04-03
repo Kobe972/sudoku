@@ -207,9 +207,27 @@ void Send_Rank(int dest)
 	fclose(InFile);
 	qsort(info, Num_of_Players, sizeof(Player_Information), comp); //info按GPA排序
 	mes.ID = RANK_ITEM;
-	for (int i = 0; i < min(10, Num_of_Players); i++) //选出至多前十个发送过去
+	bool self_involved = 0;
+	Msg self;
+	for (int i = 0; i < Num_of_Players; i++) //选出至多前十个发送过去
 	{
 		if (info[i].best_consume == 0) continue;
+		//发送自己的排名
+		if (strcmp(info[i].name, player[dest].name) == 0)
+		{
+			self_involved = 1;
+			self.ID = RANK_ITEM;
+			self.num[0] = info[i].best_consume;
+			self.num[1] = info[i].best_difficulty;
+			self.num[2] = info[i].best_score;
+			strcpy(self.string1, info[i].name);
+			strcpy(self.string2, std::to_string(i+1).c_str());
+			msglist.add(self, dest);
+			continue;
+		}
+		if (i >= 10 && self_involved) break;
+		if (i >= 10) continue;
+		//发送其他人排名
 		mes.num[0] = info[i].best_consume;
 		mes.num[1] = info[i].best_difficulty;
 		mes.num[2] = info[i].best_score;
@@ -297,14 +315,18 @@ void Send_Sudoku(int src)
 	mes.ID = BEGIN_GAME;
 	Generator puzzle;
 	puzzle.CreateSudoku();
+	puzzle.calculateDifficulty();
 	for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			mes.string1[i + 9 * j] = '0'+puzzle.grid[i][j];
+			mes.string1[9 * i + j] = '0'+puzzle.grid[i][j];
+			mes.string2[9 * i + j] = '0' + puzzle.solnGrid[i][j];
 		}
 	}
+	mes.num[0] = puzzle.difficultyLevel;
 	mes.string1[81] = 0;
+	mes.string2[81] = 0;
 	for (int i = 0; i < rooms[player[src].room].m_players.size(); i++)
 	{
 		player[rooms[player[src].room].m_players[i].ID].state = PLAYING;
@@ -333,7 +355,7 @@ void Process(Msg message, int src)
 		//重写GPA，改变玩家参数
 		player[src].state = LOBBY;
 		Write_Grade(src, message.num[0], message.num[1], message.num[2]);
-		rooms[player[src].room].del(player[src]);
+		
 		if (player[src].best_score < message.num[2])
 		{
 			player[src].best_consume = message.num[0];
@@ -341,10 +363,13 @@ void Process(Msg message, int src)
 			player[src].best_score = message.num[2];
 		}
 		//向所有玩家发送成绩信息
+		mes.ID = CLEAR_RANK;
+		msglist.add(mes, src);
 		mes.ID = RANK_ITEM;
 		for(int i=0;i<3;i++) mes.num[i]=message.num[i];
 		strcpy(mes.string1, player[src].name);
 		if (rooms[player[src].room].occupied) rooms[player[src].room].inform(mes);
+		rooms[player[src].room].del(player[src]);
 		player[src].is_host = 0;
 		player[src].room = 0;
 		break;
@@ -356,6 +381,28 @@ void Process(Msg message, int src)
 		break;
 	case RANK_RQ:
 		Send_Rank(src);
+		break;
+	case CHANGE:
+		if (player[src].is_host&&player[src].state==WAITING)
+		{
+			player[src].is_host = 0;
+			rooms[player[src].room].del(player[src]);
+			strcpy(player[src].name, "Tourist");
+			//更换房主或清空房间
+			if (rooms[player[src].room].m_players.size() != 0)
+			{
+				mes.ID = CHANGE;
+				strcpy(mes.string1, rooms[player[src].room].m_players[0].name);
+				rooms[player[src].room].m_players[0].is_host = 1;
+				rooms[player[src].room].host = rooms[player[src].room].m_players[0];
+				rooms[player[src].room].inform(mes);
+			}
+			else rooms[player[src].room].occupied = 0;
+		}
+		else
+		{
+			rooms[player[src].room].del(player[src]);
+		}
 		break;
 	default:
 		break;
