@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BobClass.h" />
+    <ClInclude Include="client.h" />
     <ClInclude Include="CSudoku.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="GameEntry.h" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BobClass.cpp" />
+    <ClCompile Include="client.cpp" />
     <ClCompile Include="CSudoku.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="generator.cpp" />

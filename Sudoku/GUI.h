@@ -7,6 +7,16 @@
 #define IRETURN 2
 #define IANSWER 3
 #define IREC 4
+#define IRANK 5
+#define IOK 6
+#define IMULTI_MODE 7
+#define ILOGIN 8
+#define IREG 9
+#define ICREATE 10
+#define IJOIN 11
+#define IBEGIN 12
+
+
 //button states
 #define BSTATENORMAL 0
 #define BSTATEON 1
@@ -21,9 +31,10 @@
 #define CSTATEOFF 1
 
 //inputbox ID
-#define IHARDSHIPBOX 0
+#define IIPBOX 0
 #define IMATH_ANSBOX 1//used in math test
 #define IPASSWORD 2
+#define IROOMBOX 3
 class CButton : CGameEntry
 {
 public:

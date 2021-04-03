@@ -146,7 +146,7 @@ void CInputBox::Create(int ID, int width, int height, int x, int y, bool passwor
 
 void CInputBox::Load(char* buf)
 {
-	memcpy(buf, m_input, sizeof(m_input));
+	strcpy(buf,m_input);
 	buf[strlen(buf) - 1] = 0;
 }
 
