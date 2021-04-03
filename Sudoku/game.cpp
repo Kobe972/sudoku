@@ -1185,24 +1185,24 @@ void CGame::MultiEnd()
             }
             TextOut(CurText.hdc, 85, 140 + (i + 1) * spacey, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);
-            TextOut(CurText.hdc, 85 + spacex * 2, 140 + (i + 1) * spacey, m_ranklist[i].name, strlen(m_ranklist[i].name));
-            TextOut(CurText.hdc, 85 + spacex, 140 + (i + 1) * spacey, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex, 140 + (i + 1) * spacey, m_ranklist[i].name, strlen(m_ranklist[i].name));
+            TextOut(CurText.hdc, 85 + spacex * 2, 140 + (i + 1) * spacey, out, strlen(out));
             TextOut(CurText.hdc, 85 + spacex * 3, 140 + (i + 1) * spacey, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
         }
         if (self_encountered==-1)
         {
             TextOut(CurText.hdc, 85, 550, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);
-            TextOut(CurText.hdc, 85 + spacex * 2, 550, m_ranklist[i].name, strlen(m_ranklist[i].name));
-            TextOut(CurText.hdc, 85 + spacex, 550, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex, 550, m_ranklist[i].name, strlen(m_ranklist[i].name));
+            TextOut(CurText.hdc, 85 + spacex * 2, 550, out, strlen(out));
             TextOut(CurText.hdc, 85 + spacex * 3, 550, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
         }
         else
         {
             TextOut(CurText.hdc, 85, 550, std::to_string(self_encountered + 1).c_str(), strlen(std::to_string(self_encountered + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)self.best_consume / 3600, (int)self.best_consume % 3600 / 60, (int)self.best_consume % 60);
-            TextOut(CurText.hdc, 85 + spacex * 2, 550, self.name, strlen(self.name));
-            TextOut(CurText.hdc, 85 + spacex, 550, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex, 550, self.name, strlen(self.name));
+            TextOut(CurText.hdc, 85 + spacex * 2, 550, out, strlen(out));
             TextOut(CurText.hdc, 85 + spacex * 3, 550, std::to_string(self.best_score).c_str(), strlen(std::to_string(self.best_score).c_str()));
         }
         lpddsback->ReleaseDC(CurText.hdc);
@@ -1244,24 +1244,24 @@ void CGame::ShowRank()
             }
             TextOut(CurText.hdc, 85, 140 + (i + 1) * spacey, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);
-            TextOut(CurText.hdc, 85 + spacex * 2, 140 + (i + 1) * spacey, m_ranklist[i].name, strlen(m_ranklist[i].name));
-            TextOut(CurText.hdc, 85 + spacex, 140 + (i + 1) * spacey, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex, 140 + (i + 1) * spacey, m_ranklist[i].name, strlen(m_ranklist[i].name));
+            TextOut(CurText.hdc, 85 + spacex * 2, 140 + (i + 1) * spacey, out, strlen(out));
             TextOut(CurText.hdc, 85 + spacex * 3, 140 + (i + 1) * spacey, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
         }
         if (self_encountered == -1)
         {
             TextOut(CurText.hdc, 85, 550, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);
-            TextOut(CurText.hdc, 85 + spacex * 2, 550, m_ranklist[i].name, strlen(m_ranklist[i].name));
-            TextOut(CurText.hdc, 85 + spacex, 550, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex, 550, m_ranklist[i].name, strlen(m_ranklist[i].name));
+            TextOut(CurText.hdc, 85 + spacex * 2, 550, out, strlen(out));
             TextOut(CurText.hdc, 85 + spacex * 3, 550, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
         }
         else
         {
             TextOut(CurText.hdc, 85, 550, std::to_string(self_encountered + 1).c_str(), strlen(std::to_string(self_encountered + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)self.best_consume / 3600, (int)self.best_consume % 3600 / 60, (int)self.best_consume % 60);
-            TextOut(CurText.hdc, 85 + spacex * 2, 550, self.name, strlen(self.name));
-            TextOut(CurText.hdc, 85 + spacex, 550, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex, 550, self.name, strlen(self.name));
+            TextOut(CurText.hdc, 85 + spacex * 2, 550, out, strlen(out));
             TextOut(CurText.hdc, 85 + spacex * 3, 550, std::to_string(self.best_score).c_str(), strlen(std::to_string(self.best_score).c_str()));
         }
         lpddsback->ReleaseDC(CurText.hdc);
