@@ -366,6 +366,12 @@ void CGame::ProcessButtonMsg()
             SetGameState(MAINMENU);
         }
         break;
+    case WAITTOCONNECT:
+        if (ButtonReturn())
+        {
+            SetGameState(MAINMENU);
+        }
+        break;
     case LOGIN:
         button[IOK].Check();
         if (button[IOK].m_state == BSTATEUP)
@@ -516,6 +522,12 @@ void CGame::ProcessButtonMsg()
         button[IANSWER].Check();
         if (button[IANSWER].m_state == BSTATEUP)
         {
+            if (m_ranklist.size() == 0 && joined > 1)
+            {
+                MessageBox(main_window_handle, "You can't see the answer until a player wins.", "Attention", MB_OK);
+                button[IANSWER].m_state = BSTATENORMAL;
+                break;
+            }
             Sudoku.duration = 0;
             if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
             if (IDYES == MessageBox(main_window_handle, "Are you sure to give up?", "Attention", MB_YESNO))
@@ -548,6 +560,15 @@ void CGame::ProcessButtonMsg()
     case SHOW_RANK:
         if (ButtonReturn()) {
             SetGameState(MAINMENU);
+        }
+        break;
+    case WAIT_GRID:
+        if (ButtonReturn()) {
+            Msg Tmessage;
+            Tmessage.ID = CHANGE;
+            g_Send.push(Tmessage);
+            is_host = 0;
+            SetGameState(JOIN_ROOM);
         }
         break;
     default:
@@ -646,7 +667,16 @@ void CGame::SingleEnd()
     int new_best=0,num=0;
     tmp.difficulty = Sudoku.m_difficulty;
     tmp.T_Consuming = Sudoku.duration;
-    tmp.global = 2 * Sudoku.m_difficulty * 100 / Sudoku.duration; 
+    tmp.global = 2 * Sudoku.m_difficulty * 100 / Sudoku.duration;
+    if (m_loggedin)
+    {
+        Msg Tmessage;
+        Tmessage.ID = END_GAME;
+        Tmessage.num[0] = tmp.T_Consuming;
+        Tmessage.num[1] = tmp.difficulty;
+        Tmessage.num[2] = tmp.global;
+        g_Send.push(Tmessage);
+    }
     while (fread(&input, sizeof(RecordItem), 1, InFile))
     {
         if (input.global > new_best) new_best = input.global;
@@ -949,18 +979,26 @@ void CGame::ProcessSerMessage()
             break;
         case REG_RESULT:
             if (Tmessage.num[0])
+            {
                 MessageBox(NULL, "Regist Successfully", "Attention", MB_OK);
+                SetGameState(MAINMENU);
+            }   
             else
                 MessageBox(NULL, "Registry fails", "Attention", MB_OK);
             break;
         case BEGIN_GAME:
-            if(m_eGameState==WAIT_TO_BEGIN || m_eGameState==WAIT_FOR_BEGINNING) SetGameState(WAIT_GRID);
+            if (m_eGameState == WAIT_TO_BEGIN || m_eGameState == WAIT_FOR_BEGINNING)
+            {
+                SetGameState(WAIT_GRID);
+                m_ranklist.clear();
+            }
             else
             {
                 Sudoku.duration = 0;
                 Sudoku.start_time = clock();
                 memset(Sudoku.m_Sudoku, 0, sizeof(Sudoku.m_Sudoku));
                 memset(Sudoku.m_const, 0, sizeof(Sudoku.m_const));
+                joined = Tmessage.num[1];
                 int first = 1;
                 Sudoku.m_difficulty = Tmessage.num[0];
                 for (int i = 0; i < 9; i++)
@@ -1229,11 +1267,12 @@ void CGame::ShowRank()
         CurText.Uself();
         SetTextColor(CurText.hdc, RGB(0, 0, 0));
         SetBkMode(CurText.hdc, TRANSPARENT);
-        int spacex = 180, spacey = 35;
+        int spacex = 145, spacey = 35;
         TextOut(CurText.hdc, 85, 140, "Rank", strlen("Rank"));
         TextOut(CurText.hdc, 85 + spacex, 140, "Name", strlen("Name"));
-        TextOut(CurText.hdc, 85 + spacex * 2, 140, "Time Consumed", strlen("Time Consumed"));
-        TextOut(CurText.hdc, 85 + spacex * 3, 140, "Score", strlen("Score"));
+        TextOut(CurText.hdc, 85 + spacex * 2, 140, "Difficulty", strlen("Difficulty"));
+        TextOut(CurText.hdc, 85 + spacex * 3, 140, "Time Used", strlen("Time Used"));
+        TextOut(CurText.hdc, 85 + spacex * 4, 140, "Score", strlen("Score"));
         int i;
         for (i = 0; i < min(10, m_ranklist.size()); i++)
         {
@@ -1245,24 +1284,27 @@ void CGame::ShowRank()
             TextOut(CurText.hdc, 85, 140 + (i + 1) * spacey, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);
             TextOut(CurText.hdc, 85 + spacex, 140 + (i + 1) * spacey, m_ranklist[i].name, strlen(m_ranklist[i].name));
-            TextOut(CurText.hdc, 85 + spacex * 2, 140 + (i + 1) * spacey, out, strlen(out));
-            TextOut(CurText.hdc, 85 + spacex * 3, 140 + (i + 1) * spacey, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
+            TextOut(CurText.hdc, 85 + spacex * 2, 140 + (i + 1) * spacey, std::to_string(m_ranklist[i].best_difficulty).c_str(), strlen(std::to_string(m_ranklist[i].best_difficulty).c_str()));
+            TextOut(CurText.hdc, 85 + spacex * 3, 140 + (i + 1) * spacey, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex * 4, 140 + (i + 1) * spacey, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
         }
         if (self_encountered == -1)
         {
             TextOut(CurText.hdc, 85, 550, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);
             TextOut(CurText.hdc, 85 + spacex, 550, m_ranklist[i].name, strlen(m_ranklist[i].name));
-            TextOut(CurText.hdc, 85 + spacex * 2, 550, out, strlen(out));
-            TextOut(CurText.hdc, 85 + spacex * 3, 550, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
+            TextOut(CurText.hdc, 85 + spacex * 2, 550, std::to_string(m_ranklist[i].best_difficulty).c_str(), strlen(std::to_string(m_ranklist[i].best_difficulty).c_str()));
+            TextOut(CurText.hdc, 85 + spacex * 3, 550, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex * 4, 550, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
         }
         else
         {
             TextOut(CurText.hdc, 85, 550, std::to_string(self_encountered + 1).c_str(), strlen(std::to_string(self_encountered + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)self.best_consume / 3600, (int)self.best_consume % 3600 / 60, (int)self.best_consume % 60);
             TextOut(CurText.hdc, 85 + spacex, 550, self.name, strlen(self.name));
-            TextOut(CurText.hdc, 85 + spacex * 2, 550, out, strlen(out));
-            TextOut(CurText.hdc, 85 + spacex * 3, 550, std::to_string(self.best_score).c_str(), strlen(std::to_string(self.best_score).c_str()));
+            TextOut(CurText.hdc, 85 + spacex * 2, 550, std::to_string(self.best_difficulty).c_str(), strlen(std::to_string(self.best_difficulty).c_str()));
+            TextOut(CurText.hdc, 85 + spacex * 3, 550, out, strlen(out));
+            TextOut(CurText.hdc, 85 + spacex * 4, 550, std::to_string(self.best_score).c_str(), strlen(std::to_string(self.best_score).c_str()));
         }
         lpddsback->ReleaseDC(CurText.hdc);
     }

@@ -60,6 +60,7 @@ private:
 	bool g_IsSilent;
 	bool is_host = 0;
 	vector<RecordItem> m_RecordList;
+	int joined = 0;
 public:
 	enum EGameState {
 		eGameStatePreface=0,eGameStateMainMenu = 1, eGameStateCreateSudoku, eGameStateSinglePlayer, eGameStateSingleEnd,
