@@ -299,7 +299,7 @@ void Reg(char* name, char* passwd, int ID)
 		msglist.add(mes, ID);
 		return;
 	}
-	mes.num[1] = 1;
+	mes.num[0] = 1;
 	msglist.add(mes, ID);
 	info.best_consume = info.best_difficulty = info.best_score = 0;
 	strcpy(info.name, name);
@@ -325,6 +325,7 @@ void Send_Sudoku(int src)
 		}
 	}
 	mes.num[0] = puzzle.difficultyLevel;
+	mes.num[1] = rooms[player[src].room].m_players.size();
 	mes.string1[81] = 0;
 	mes.string2[81] = 0;
 	for (int i = 0; i < rooms[player[src].room].m_players.size(); i++)
