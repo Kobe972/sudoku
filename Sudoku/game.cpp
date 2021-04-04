@@ -285,7 +285,13 @@ void CGame::ProcessButtonMsg()
                 switch (i)
                 {
                 case ISINGLE_MODE:
-                    SetGameState(CREATE_SU);
+                    if (!m_loggedin)
+                    {
+                           if (IDYES == MessageBox(main_window_handle, "You've not logged in,so your record won't be saved in the server.Are you sure to start?", "Attention", MB_YESNO))
+                                SetGameState(CREATE_SU);
+                            else SetGameState(MAINMENU);
+                    }
+                    else SetGameState(CREATE_SU);
                     break;
                 case IHELP:
                     SetGameState(HELP);
