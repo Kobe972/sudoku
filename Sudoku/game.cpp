@@ -34,11 +34,11 @@ void CGame::GameInit()
     button[IJOIN].Create(IJOIN, 271, 63, 264, 250, "join");
     button[ICREATE].Create(ICREATE, 271, 63, 264, 400, "create");
     button[IBEGIN].Create(IBEGIN, 217, 63, 292, 400, "begin");
-    button[IRANK].Create(IRANK, 80, 80, 50, 10, "rank");
+    button[IRANK].Create(IRANK, 80, 80, 30, 10, "rank");
     inputbox[IIPBOX].Create(IIPBOX, 250, 25, 80, 250, false);
     inputbox[IPASSWORD].Create(IPASSWORD, 250, 25, 80, 350, true);
     inputbox[IROOMBOX].Create(IROOMBOX, 250, 25, 80, 300, false);
-    checkbox[J_SILENCE].Create(J_SILENCE, 50, 50, 720, 2, "silence", 0);
+    checkbox[J_SILENCE].Create(J_SILENCE, 50, 50, 720, 10, "silence", 0);
     Sudoku.GameInit();
     DInput_Init();
     DInput_Init_Keyboard();
@@ -641,6 +641,19 @@ void CGame::ShowMenu()
     button[IREG].Draw();
     button[IRANK].Draw();
     checkbox[J_SILENCE].Draw();
+    if (m_loggedin) {
+        CFont TCurText;
+        lpddsback->GetDC(&TCurText.hdc);
+        TCurText.SetType(25, 10, 15);
+        TCurText.Uself();
+        SetBkMode(TCurText.hdc, TRANSPARENT);
+        SetTextColor(TCurText.hdc, RGB(255, 255, 0));
+        SIZE siz;
+        std::string TCur = "Username:" + m_username;
+        GetTextExtentPoint32(TCurText.hdc, TCur.c_str(), strlen(TCur.c_str()), &siz);
+        TextOut(TCurText.hdc, (800-siz.cx)/2, 20, TCur.c_str(), TCur.size());
+        lpddsback->ReleaseDC(TCurText.hdc);
+    }
     return;
 }
 
