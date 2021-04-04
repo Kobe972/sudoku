@@ -694,8 +694,8 @@ void CGame::SingleEnd()
     {
         fwrite(&tmplist[i], sizeof(RecordItem), 1, OutFile);
     }
-    if(tmp.global>new_best) MessageBox(main_window_handle, "New best!", "Congratulations", MB_OK);
-    else MessageBox(main_window_handle, "You win!", "Congratulations", MB_OK);
+    if(tmp.global>new_best) MessageBox(main_window_handle, (std::string("New best!\n") + std::string("Your score is") + std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
+    else MessageBox(main_window_handle, (std::string("You win!\n")+std::string("Your score is")+std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
     SetGameState(MAINMENU);
     fclose(InFile);
     fclose(OutFile);
