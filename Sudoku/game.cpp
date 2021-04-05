@@ -1007,7 +1007,7 @@ void CGame::ProcessSerMessage()
                 MessageBox(NULL, "Registry fails", "Attention", MB_OK);
             break;
         case BEGIN_GAME:
-            if (m_eGameState == WAIT_TO_BEGIN || m_eGameState == WAIT_FOR_BEGINNING)
+            if (Tmessage.num[0]==0)
             {
                 SetGameState(WAIT_GRID);
                 m_ranklist.clear();
