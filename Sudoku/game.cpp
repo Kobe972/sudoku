@@ -707,8 +707,8 @@ void CGame::SingleEnd()
     {
         fwrite(&tmplist[i], sizeof(RecordItem), 1, OutFile);
     }
-    if(tmp.global>new_best) MessageBox(main_window_handle, (std::string("New best!\n") + std::string("Your score is") + std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
-    else MessageBox(main_window_handle, (std::string("You win!\n")+std::string("Your score is")+std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
+    if(tmp.global>new_best) MessageBox(main_window_handle, (std::string("New best!\n") + std::string("Your score is ") + std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
+    else MessageBox(main_window_handle, (std::string("You win!\n")+std::string("Your score is ")+std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
     SetGameState(MAINMENU);
     fclose(InFile);
     fclose(OutFile);
@@ -1048,7 +1048,6 @@ void CGame::ProcessSerMessage()
         case DISCONNECT:
             MessageBox(NULL, "Disconnect with the server!", "Attention", MB_OK);
             m_connected = m_loggedin = false;
-            SetGameState(MAINMENU);
             break;
         case JOIN:
             if (Tmessage.num[0] == 1)
@@ -1310,12 +1309,15 @@ void CGame::ShowRank()
         }
         if (self_encountered == -1)
         {
-            TextOut(CurText.hdc, 85, 550, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
-            sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);
-            TextOut(CurText.hdc, 85 + spacex, 550, m_ranklist[i].name, strlen(m_ranklist[i].name));
-            TextOut(CurText.hdc, 85 + spacex * 2, 550, std::to_string(m_ranklist[i].best_difficulty).c_str(), strlen(std::to_string(m_ranklist[i].best_difficulty).c_str()));
-            TextOut(CurText.hdc, 85 + spacex * 3, 550, out, strlen(out));
-            TextOut(CurText.hdc, 85 + spacex * 4, 550, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
+            if (m_ranklist.size() != i)
+            {
+                TextOut(CurText.hdc, 85, 550, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
+                sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);
+                TextOut(CurText.hdc, 85 + spacex, 550, m_ranklist[i].name, strlen(m_ranklist[i].name));
+                TextOut(CurText.hdc, 85 + spacex * 2, 550, std::to_string(m_ranklist[i].best_difficulty).c_str(), strlen(std::to_string(m_ranklist[i].best_difficulty).c_str()));
+                TextOut(CurText.hdc, 85 + spacex * 3, 550, out, strlen(out));
+                TextOut(CurText.hdc, 85 + spacex * 4, 550, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
+            }
         }
         else
         {
