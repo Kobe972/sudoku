@@ -882,6 +882,7 @@ int comp(const void* p1, const void* p2)
 void CGame::Login()
 {
     if (!m_connected) {
+        strcpy(inputbox[IIPBOX].m_input, "118.195.140.195|");
         SetGameState(CONNECTTOSERVE);
         return;
     }
