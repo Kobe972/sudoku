@@ -3,6 +3,7 @@
 #include<string>
 #include<ctime>
 #include<queue>
+#pragma comment(lib,"User32.lib")
 using namespace std;
 //ID of structure MSG
 #define CREATE 0//创建房间（客户端给服务器）
@@ -18,6 +19,7 @@ using namespace std;
 #define RANK_RQ 9 //请求获得排名列表（客户端给服务器）
 #define BEGIN_GAME 10 //房主开始游戏（双向）
 #define CHANGE 11//游戏开始前房主离开，房主自动更换
+#define MEANINGLESS 12 //无用信息，出错后把消息转换成这个
 
 //player state
 #define LOBBY 0

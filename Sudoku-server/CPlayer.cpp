@@ -53,11 +53,15 @@ int CPlayer::receive(Msg* message)
 {
 	char buf[50];
 	if (connected == false) return 0;
-	if (recv(conn, buf, sizeof(buf), 0) > 0)
-	{
-		StringToMsg(message, buf);
-		return 1;
-	}
+		if (recv(conn, buf, sizeof(buf), 0) > 0)
+			{
+				StringToMsg(message, buf);
+				return 1;
+			}
+		message->ID = 20;
+		message->num[0] = message->num[1] = message->num[2] = 0;
+		strcpy(message->string1, "?");
+		strcpy(message->string2, "?");
 	return 0;
 }
 
@@ -83,19 +87,34 @@ void MsgToString(Msg message, char* ans)
 
 void StringToMsg(Msg* message, char* str)
 {
-	char* tmp;
-	tmp = strtok(str, " ");
-	message->ID = atoi(tmp);
-	tmp = strtok(NULL, " ");
-	message->num[0] = atoi(tmp);
-	tmp = strtok(NULL, " ");
-	message->num[1] = atoi(tmp);
-	tmp = strtok(NULL, " ");
-	message->num[2] = atoi(tmp);
-	tmp = strtok(NULL, " ");
-	strcpy(message->string1, tmp);
-	tmp = strtok(NULL, " ");
-	strcpy(message->string2, tmp);
+	int spaces = 0;
+	for (int i = 0; i < strlen(str); i++)
+	{
+		if (str[i] == ' ') spaces++;
+	}
+	if (spaces == 6)
+	{
+		char* tmp;
+		tmp = strtok(str, " ");
+		message->ID = atoi(tmp);
+		tmp = strtok(NULL, " ");
+		message->num[0] = atoi(tmp);
+		tmp = strtok(NULL, " ");
+		message->num[1] = atoi(tmp);
+		tmp = strtok(NULL, " ");
+		message->num[2] = atoi(tmp);
+		tmp = strtok(NULL, " ");
+		strcpy(message->string1, tmp);
+		tmp = strtok(NULL, " ");
+		strcpy(message->string2, tmp);
+	}
+	else
+	{
+		message->ID = 20;
+		message->num[0] = message->num[1] = message->num[2] = 0;
+		strcpy(message->string1, "?");
+		strcpy(message->string2, "?");
+	}
 	return;
 }
 
