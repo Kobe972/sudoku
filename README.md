@@ -4,4 +4,5 @@ The program contains two parts:a client and a server.To compile the game,you sho
 And for computers lack of VC running libraries,you should visit the site to download them.
 
 Notice:the acquaint server IP is 118.195.140.195.
+
 The background music is changable.You can add or delete music files in folder Sounds/bgmusic under the installation directory.
