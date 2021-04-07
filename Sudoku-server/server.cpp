@@ -405,6 +405,9 @@ void Process(Msg message, int src)
 			rooms[player[src].room].del(player[src]);
 		}
 		break;
+	case BUMP:
+		player[src].last_bump_time = clock();
+		break;
 	default:
 		break;
 	}
