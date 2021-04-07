@@ -931,7 +931,8 @@ void CGame::Login()
 void CGame::Reg()
 {
     if (!m_connected) {
-        m_eGameState = eGameStateConnectToServ;
+        strcpy(inputbox[IIPBOX].m_input, "118.195.140.195|");
+        SetGameState(CONNECTTOSERVE);
         return;
     }
 
