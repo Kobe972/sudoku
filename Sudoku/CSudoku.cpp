@@ -26,6 +26,8 @@ void CSudoku::Create()
 {
 	memset(m_Sudoku, 0, sizeof(m_Sudoku));
 	memset(m_const, 0, sizeof(m_const));
+	memset(g_mode, 0, sizeof(g_mode));
+	memset(m_small, 0, sizeof(m_small));
 	BITMAP_FILE_PTR bitmap = new BITMAP_FILE;//»æÖÆ±³¾°
 	bitmap->Load_File(".\\background\\sky.bmp");
 	DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });

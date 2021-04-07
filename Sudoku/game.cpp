@@ -388,14 +388,21 @@ void CGame::ProcessButtonMsg()
             if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
             Msg Tmessage;
             Tmessage.ID = LOG;
-            inputbox[IIPBOX].Load(Tmessage.string1);
-            inputbox[IPASSWORD].Load(Tmessage.string2);
-            g_Send.push(Tmessage);
-            m_username = Tmessage.string1;
-            memset(inputbox[IIPBOX].m_input, 0, sizeof(inputbox[IIPBOX].m_input));
-            memset(inputbox[IPASSWORD].m_input, 0, sizeof(inputbox[IPASSWORD].m_input));
-            inputbox[IIPBOX].m_input[0] = '|';
-            inputbox[IPASSWORD].m_input[0] = '|';
+            if(strlen(inputbox[IIPBOX].m_input)<=21&&strlen(inputbox[IPASSWORD].m_input)<=21)
+            { 
+                inputbox[IIPBOX].Load(Tmessage.string1);
+                inputbox[IPASSWORD].Load(Tmessage.string2);
+                g_Send.push(Tmessage);
+                m_username = Tmessage.string1;
+                memset(inputbox[IIPBOX].m_input, 0, sizeof(inputbox[IIPBOX].m_input));
+                memset(inputbox[IPASSWORD].m_input, 0, sizeof(inputbox[IPASSWORD].m_input));
+                inputbox[IIPBOX].m_input[0] = '|';
+                inputbox[IPASSWORD].m_input[0] = '|';
+            }
+            else
+            {
+                MessageBox(main_window_handle, "Your username and password must be no longer than 20 characters.", "Error", MB_OK);
+            }
             button[IOK].m_state = BSTATENORMAL;
         }
         if (ButtonReturn()) {
@@ -411,16 +418,23 @@ void CGame::ProcessButtonMsg()
         if (button[IOK].m_state == BSTATEUP)
         {
             if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
-            Msg Tmessage;
-            Tmessage.ID = REG;
-            inputbox[IIPBOX].Load(Tmessage.string1);
-            inputbox[IPASSWORD].Load(Tmessage.string2);
-            g_Send.push(Tmessage);
-            m_username = Tmessage.string1;
-            memset(inputbox[IIPBOX].m_input, 0, sizeof(inputbox[IIPBOX].m_input));
-            memset(inputbox[IPASSWORD].m_input, 0, sizeof(inputbox[IPASSWORD].m_input));
-            inputbox[IIPBOX].m_input[0] = '|';
-            inputbox[IPASSWORD].m_input[0] = '|';
+            if (strlen(inputbox[IIPBOX].m_input) <= 21 && strlen(inputbox[IPASSWORD].m_input) <= 21)
+            {
+                Msg Tmessage;
+                Tmessage.ID = REG;
+                inputbox[IIPBOX].Load(Tmessage.string1);
+                inputbox[IPASSWORD].Load(Tmessage.string2);
+                g_Send.push(Tmessage);
+                m_username = Tmessage.string1;
+                memset(inputbox[IIPBOX].m_input, 0, sizeof(inputbox[IIPBOX].m_input));
+                memset(inputbox[IPASSWORD].m_input, 0, sizeof(inputbox[IPASSWORD].m_input));
+                inputbox[IIPBOX].m_input[0] = '|';
+                inputbox[IPASSWORD].m_input[0] = '|';
+            }
+            else
+            {
+                MessageBox(main_window_handle, "Your username and password must be no longer than 20 characters.", "Error", MB_OK);
+            }
             button[IOK].m_state = BSTATENORMAL;
         }
         if (ButtonReturn()) {
@@ -457,16 +471,23 @@ void CGame::ProcessButtonMsg()
             if (button[IOK].m_state == BSTATEUP)
             {
                 if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
-                Msg Tmessage;
-                char tmp[10];
-                Tmessage.ID = JOIN;
-                inputbox[IROOMBOX].Load(tmp);
-                Tmessage.num[0] = atoi(tmp);
-                g_Send.push(Tmessage);
-                waiting_srv = 1;
+                if (atoi(inputbox[IROOMBOX].m_input) > 0 && atoi(inputbox[IROOMBOX].m_input) < 10000)
+                {
+                    Msg Tmessage;
+                    char tmp[10];
+                    Tmessage.ID = JOIN;
+                    inputbox[IROOMBOX].Load(tmp);
+                    Tmessage.num[0] = atoi(tmp);
+                    g_Send.push(Tmessage);
+                    waiting_srv = 1;
+                    memset(inputbox[IROOMBOX].m_input, 0, sizeof(inputbox[IROOMBOX].m_input));
+                    inputbox[IROOMBOX].m_input[0] = '|';
+                }
+                else
+                {
+                    MessageBox(main_window_handle, "Your room number must be 1 to 9999!", "Error", MB_OK);
+                }
                 button[IOK].m_state = BSTATENORMAL;
-                memset(inputbox[IROOMBOX].m_input, 0, sizeof(inputbox[IROOMBOX].m_input));
-                inputbox[IROOMBOX].m_input[0] = '|';
             }
         }
         if (ButtonReturn()) {
@@ -482,16 +503,23 @@ void CGame::ProcessButtonMsg()
             if (button[IOK].m_state == BSTATEUP)
             {
                 if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
-                Msg Tmessage;
-                char tmp[10];
-                Tmessage.ID = CREATE;
-                inputbox[IROOMBOX].Load(tmp);
-                Tmessage.num[0] = atoi(tmp);
-                g_Send.push(Tmessage);
-                waiting_srv = 1;
+                if (atoi(inputbox[IROOMBOX].m_input) > 0&&atoi(inputbox[IROOMBOX].m_input) < 10000)
+                {
+                    Msg Tmessage;
+                    char tmp[10];
+                    Tmessage.ID = CREATE;
+                    inputbox[IROOMBOX].Load(tmp);
+                    Tmessage.num[0] = atoi(tmp);
+                    g_Send.push(Tmessage);
+                    waiting_srv = 1;
+                    memset(inputbox[IROOMBOX].m_input, 0, sizeof(inputbox[IROOMBOX].m_input));
+                    inputbox[IROOMBOX].m_input[0] = '|';
+                }
+                else
+                {
+                    MessageBox(main_window_handle, "Your room number must be 1 to 9999!", "Error", MB_OK);
+                }
                 button[IOK].m_state = BSTATENORMAL;
-                memset(inputbox[IROOMBOX].m_input, 0, sizeof(inputbox[IROOMBOX].m_input));
-                inputbox[IROOMBOX].m_input[0] = '|';
             }
         }
         if (ButtonReturn()) {
@@ -994,11 +1022,11 @@ void CGame::ProcessSerMessage()
         case LOG_RESULT:
             m_loggedin = Tmessage.num[0];
             if (Tmessage.num[0]) {
-                MessageBox(NULL, "Log in Successfully", "Attention", MB_OK);
+                MessageBox(NULL, "Login Successfully", "Attention", MB_OK);
                 SetGameState(MAINMENU);
             }
             else
-                MessageBox(NULL, "Log fails", "Attention", MB_OK);
+                MessageBox(NULL, "Failed to login.Please check your username and password!", "Attention", MB_OK);
             break;
         case REG_RESULT:
             if (Tmessage.num[0])
@@ -1007,7 +1035,7 @@ void CGame::ProcessSerMessage()
                 SetGameState(MAINMENU);
             }
             else
-                MessageBox(NULL, "Registry fails", "Attention", MB_OK);
+                MessageBox(NULL, "Registry fails.The username already exists.", "Attention", MB_OK);
             break;
         case BEGIN_GAME:
             if (Tmessage.num[0] == 0)
