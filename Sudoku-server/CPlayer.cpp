@@ -43,6 +43,7 @@ int CPlayer::connect(SOCKET listening_sock)
 	conn = accept(listening_sock, (SOCKADDR*)&clientAddr, &len);
 	if (conn != INVALID_SOCKET)
 	{
+		last_bump_time = clock();
 		connected = true;
 		return 1;
 	}
@@ -126,8 +127,12 @@ void CPlayer::check()
 	/*MSG_PEEK表示从输入队列中读数据但并不将数据从输入队列中移除*/
 	recv(conn, buffer, 1, MSG_PEEK);
 	is_ok = (WSAECONNRESET != WSAGetLastError());
+	if (clock() - last_bump_time >= 20000) is_ok = 0;
 	if (!is_ok)
 	{
+		int mode = 1;
+		conn = socket(AF_INET, SOCK_STREAM, 0);
+		ioctlsocket(conn, FIONBIO, (u_long FAR*) & mode);
 		best_consume = 0;
 		best_difficulty = 0;
 		best_score = 0;
