@@ -1074,6 +1074,7 @@ void CGame::ProcessSerMessage()
                         }
                     }
                 }
+                m_ranklist.clear();
                 SetGameState(MULTIPLAYER);
             }
             break;
