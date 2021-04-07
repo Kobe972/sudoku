@@ -3,6 +3,7 @@
 #include<string>
 #include<ctime>
 #include<queue>
+#include<conio.h>
 #pragma comment(lib,"User32.lib")
 using namespace std;
 //ID of structure MSG
@@ -20,6 +21,7 @@ using namespace std;
 #define BEGIN_GAME 10 //房主开始游戏（双向）
 #define CHANGE 11//游戏开始前房主离开，房主自动更换
 #define MEANINGLESS 12 //无用信息，出错后把消息转换成这个
+#define BUMP 13
 
 //player state
 #define LOBBY 0
@@ -45,6 +47,7 @@ void StringToMsg(Msg* message, char* str);//把字符串解码回Msg型数据格式
 class CPlayer
 {
 public:
+	clock_t last_bump_time = clock();
 	char name[20] = "Tourist";
 	int best_consume = 0,best_difficulty=0,best_score=0;
 	int ID;
