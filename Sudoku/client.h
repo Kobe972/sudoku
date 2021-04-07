@@ -19,6 +19,7 @@
 #define BEGIN_GAME 10 //房主开始游戏（双向）
 #define CHANGE 11//游戏开始前房主离开，房主自动更换
 #define DISCONNECT 12
+#define BUMP 13
 
 //player state
 #define LOBBY 0

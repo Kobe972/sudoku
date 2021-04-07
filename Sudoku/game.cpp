@@ -287,9 +287,9 @@ void CGame::ProcessButtonMsg()
                 case ISINGLE_MODE:
                     if (!m_loggedin)
                     {
-                           if (IDYES == MessageBox(main_window_handle, "You've not logged in,so your record won't be saved in the server.Are you sure to start?", "Attention", MB_YESNO))
-                                SetGameState(CREATE_SU);
-                            else SetGameState(MAINMENU);
+                        if (IDYES == MessageBox(main_window_handle, "You've not logged in,so your record won't be saved in the server.Are you sure to start?", "Attention", MB_YESNO))
+                            SetGameState(CREATE_SU);
+                        else SetGameState(MAINMENU);
                     }
                     else SetGameState(CREATE_SU);
                     break;
@@ -343,7 +343,7 @@ void CGame::ProcessButtonMsg()
         {
             if (IDYES == MessageBox(main_window_handle, "Are you sure to give up?", "Attention", MB_YESNO))
                 SetGameState(MAINMENU);
-        }  
+        }
         break;
     case ANSWER:
         if (ButtonReturn())
@@ -352,7 +352,7 @@ void CGame::ProcessButtonMsg()
     case SHOW_REC:
         if (ButtonReturn())
             SetGameState(MAINMENU);
-     break;
+        break;
     case CONNECTTOSERVE:
         button[IOK].Check();
         if (button[IOK].m_state == BSTATEUP)
@@ -360,6 +360,9 @@ void CGame::ProcessButtonMsg()
             if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
             g_ServeID = inputbox[IIPBOX].m_input;
             g_ServeID = g_ServeID.substr(0, g_ServeID.size() - 1);
+            int mode = 1;
+            g_connSocket = socket(AF_INET, SOCK_STREAM, 0);
+            ioctlsocket(g_connSocket, FIONBIO, (u_long FAR*) & mode);
             SetGameState(WAITTOCONNECT);
             g_connecttime.Start_Clock();
             button[IOK].m_state = BSTATENORMAL;
@@ -555,7 +558,7 @@ void CGame::ProcessButtonMsg()
                 g_Send.push(Tmessage);
                 is_host = 0;
                 SetGameState(MAINMENU);
-            }       
+            }
         }
         break;
     case MULTIEND:
@@ -596,7 +599,7 @@ void CGame::ProcessCheckBoxMsg()
     if (last == 0 && g_IsSilent == 1)
     {
         mciSendString("stop bgmusic", NULL, 0, NULL);
-        mciSendString("close bgmusic",NULL,0,NULL);
+        mciSendString("close bgmusic", NULL, 0, NULL);
     }
     return;
 }
@@ -651,7 +654,7 @@ void CGame::ShowMenu()
         SIZE siz;
         std::string TCur = "Username:" + m_username;
         GetTextExtentPoint32(TCurText.hdc, TCur.c_str(), strlen(TCur.c_str()), &siz);
-        TextOut(TCurText.hdc, (800-siz.cx)/2, 20, TCur.c_str(), TCur.size());
+        TextOut(TCurText.hdc, (800 - siz.cx) / 2, 20, TCur.c_str(), TCur.size());
         lpddsback->ReleaseDC(TCurText.hdc);
     }
     return;
@@ -676,14 +679,14 @@ void CGame::SingleEnd()
 {
     FILE* InFile;
     if (_access(".\\data\\", 0) == -1)
-         _mkdir(".\\data");
+        _mkdir(".\\data");
     if (_access(".\\data\\record.dat", 0) != -1)
-         InFile = fopen(".\\data\\record.dat", "rb+");
+        InFile = fopen(".\\data\\record.dat", "rb+");
     else
-         InFile = fopen(".\\data\\record.dat", "wb+");
+        InFile = fopen(".\\data\\record.dat", "wb+");
     FILE* OutFile = fopen(".\\data\\tmp.dat", "wb");
-    RecordItem tmp,input,tmplist[11];
-    int new_best=0,num=0;
+    RecordItem tmp, input, tmplist[11];
+    int new_best = 0, num = 0;
     tmp.difficulty = Sudoku.m_difficulty;
     tmp.T_Consuming = Sudoku.duration;
     tmp.global = 2 * Sudoku.m_difficulty * 100 / Sudoku.duration;
@@ -699,16 +702,16 @@ void CGame::SingleEnd()
     while (fread(&input, sizeof(RecordItem), 1, InFile))
     {
         if (input.global > new_best) new_best = input.global;
-        tmplist[num ++] = input;
+        tmplist[num++] = input;
     }
-    tmplist[num ++] = tmp;
+    tmplist[num++] = tmp;
     qsort(tmplist, num, sizeof(RecordItem), comp);
-    for (int i = 0; i < min(10,num); i++)
+    for (int i = 0; i < min(10, num); i++)
     {
         fwrite(&tmplist[i], sizeof(RecordItem), 1, OutFile);
     }
-    if(tmp.global>new_best) MessageBox(main_window_handle, (std::string("New best!\n") + std::string("Your score is ") + std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
-    else MessageBox(main_window_handle, (std::string("You win!\n")+std::string("Your score is ")+std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
+    if (tmp.global > new_best) MessageBox(main_window_handle, (std::string("New best!\n") + std::string("Your score is ") + std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
+    else MessageBox(main_window_handle, (std::string("You win!\n") + std::string("Your score is ") + std::to_string(tmp.global)).c_str(), "Congratulations", MB_OK);
     SetGameState(MAINMENU);
     fclose(InFile);
     fclose(OutFile);
@@ -790,7 +793,7 @@ void CGame::PrepareRecordList()
         InFile = fopen(".\\data\\record.dat", "rb");
     else
         InFile = fopen(".\\data\\record.dat", "wb+");
-    RecordItem* ite=new RecordItem;
+    RecordItem* ite = new RecordItem;
     RecordItem records[10];
     m_RecordList.clear();
     int num = 0;
@@ -798,7 +801,7 @@ void CGame::PrepareRecordList()
     {
         records[num++] = *ite;
     }
-    int best=0;
+    int best = 0;
     qsort(records, num, sizeof(RecordItem), comp);
     for (int i = 0; i < min(10, num); i++) //选出至多前十个
     {
@@ -824,16 +827,16 @@ void CGame::ShowRecords()
     CurText.Uself();
     SetTextColor(CurText.hdc, RGB(0, 0, 0));
     SetBkMode(CurText.hdc, TRANSPARENT);
-    int spacex = 180,spacey=40;
+    int spacex = 180, spacey = 40;
     TextOut(CurText.hdc, 85, 120, "Rank", strlen("Rank"));
-    TextOut(CurText.hdc, 85+spacex, 120, "Time Consumed", strlen("Time Consumed"));
-    TextOut(CurText.hdc, 85+ spacex*2, 120 , "Difficulty", strlen("Difficulty"));
-    TextOut(CurText.hdc, 85 + spacex*3, 120, "Score", strlen("Score"));
+    TextOut(CurText.hdc, 85 + spacex, 120, "Time Consumed", strlen("Time Consumed"));
+    TextOut(CurText.hdc, 85 + spacex * 2, 120, "Difficulty", strlen("Difficulty"));
+    TextOut(CurText.hdc, 85 + spacex * 3, 120, "Score", strlen("Score"));
     for (int i = 0; i < m_RecordList.size(); i++)
     {
-        TextOut(CurText.hdc, 85, 120 + (i + 1) * spacey,std::to_string(i+1).c_str(), strlen(std::to_string(i + 1).c_str()));
+        TextOut(CurText.hdc, 85, 120 + (i + 1) * spacey, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
         sprintf(out, "%02d:%02d:%02d", (int)m_RecordList[i].T_Consuming / 3600, (int)m_RecordList[i].T_Consuming % 3600 / 60, (int)m_RecordList[i].T_Consuming % 60);
-        TextOut(CurText.hdc, 85 + spacex, 120+(i + 1) * spacey, out, strlen(out));
+        TextOut(CurText.hdc, 85 + spacex, 120 + (i + 1) * spacey, out, strlen(out));
         TextOut(CurText.hdc, 85 + spacex * 2, 120 + (i + 1) * spacey, std::to_string(m_RecordList[i].difficulty).c_str(), strlen(std::to_string(m_RecordList[i].difficulty).c_str()));
         TextOut(CurText.hdc, 85 + spacex * 3, 120 + (i + 1) * spacey, std::to_string(m_RecordList[i].global).c_str(), strlen(std::to_string(m_RecordList[i].global).c_str()));
     }
@@ -850,7 +853,7 @@ CGame::~CGame()
 
 string GetRandomBGMusic()
 {
-    string path=".\\Sounds\\bgmusic";
+    string path = ".\\Sounds\\bgmusic";
     vector<string> files;
     srand((unsigned)time(NULL));
     //文件句柄 
@@ -980,10 +983,10 @@ void CGame::ProcessSerMessage()
         case RANK_ITEM:
             if (strcmp(Tmessage.string2, "?") != 0)
             {
-                Load_Rank(Tmessage.num[0], Tmessage.num[1], Tmessage.num[2], Tmessage.string1,atoi(Tmessage.string2));
+                Load_Rank(Tmessage.num[0], Tmessage.num[1], Tmessage.num[2], Tmessage.string1, atoi(Tmessage.string2));
                 break;
             }
-            Load_Rank(Tmessage.num[0],Tmessage.num[1],Tmessage.num[2], Tmessage.string1);
+            Load_Rank(Tmessage.num[0], Tmessage.num[1], Tmessage.num[2], Tmessage.string1);
             break;
         case CLEAR_RANK:
             m_ranklist.clear();
@@ -1002,12 +1005,12 @@ void CGame::ProcessSerMessage()
             {
                 MessageBox(NULL, "Regist Successfully", "Attention", MB_OK);
                 SetGameState(MAINMENU);
-            }   
+            }
             else
                 MessageBox(NULL, "Registry fails", "Attention", MB_OK);
             break;
         case BEGIN_GAME:
-            if (Tmessage.num[0]==0)
+            if (Tmessage.num[0] == 0)
             {
                 SetGameState(WAIT_GRID);
                 m_ranklist.clear();
@@ -1025,7 +1028,7 @@ void CGame::ProcessSerMessage()
                 {
                     for (int j = 0; j < 9; j++)
                     {
-                        Sudoku.m_Sudoku[i][j] = Tmessage.string1[9 * i + j]-'0';
+                        Sudoku.m_Sudoku[i][j] = Tmessage.string1[9 * i + j] - '0';
                         Sudoku.m_ans[i][j] = Tmessage.string2[9 * i + j] - '0';
                         if (Sudoku.m_Sudoku[i][j] != 0)
                         {
@@ -1079,7 +1082,7 @@ void CGame::ProcessSerMessage()
             if (strcmp(Tmessage.string1, m_username.c_str()) == 0)
             {
                 is_host = 1;
-                if(m_eGameState==WAIT_FOR_BEGINNING) SetGameState(WAIT_TO_BEGIN);
+                if (m_eGameState == WAIT_FOR_BEGINNING) SetGameState(WAIT_TO_BEGIN);
             }
             break;
         default:
@@ -1088,10 +1091,10 @@ void CGame::ProcessSerMessage()
     }
 }
 
-void CGame::Load_Rank(int best_consume, int best_difficulty, int best_score, char* username,int rank)
+void CGame::Load_Rank(int best_consume, int best_difficulty, int best_score, char* username, int rank)
 {
     RankItem Tcur;
-    if (rank!=0)
+    if (rank != 0)
     {
         Tcur.is_self = 1;
         Tcur.rank = rank;
@@ -1168,7 +1171,7 @@ void CGame::MultiPlayer()
         message.ID = END_GAME;
         message.num[0] = Sudoku.duration;
         message.num[1] = Sudoku.m_difficulty;
-        message.num[2]= 2 * Sudoku.m_difficulty * 100 / Sudoku.duration;
+        message.num[2] = 2 * Sudoku.m_difficulty * 100 / Sudoku.duration;
         g_Send.push(message);
         message.ID = RANK_RQ;
         message.num[0] = message.num[1] = message.num[2] = 0;
@@ -1246,7 +1249,7 @@ void CGame::MultiEnd()
             TextOut(CurText.hdc, 85 + spacex * 2, 140 + (i + 1) * spacey, out, strlen(out));
             TextOut(CurText.hdc, 85 + spacex * 3, 140 + (i + 1) * spacey, std::to_string(m_ranklist[i].best_score).c_str(), strlen(std::to_string(m_ranklist[i].best_score).c_str()));
         }
-        if (self_encountered==-1)
+        if (self_encountered == -1)
         {
             TextOut(CurText.hdc, 85, 550, std::to_string(i + 1).c_str(), strlen(std::to_string(i + 1).c_str()));
             sprintf(out, "%02d:%02d:%02d", (int)m_ranklist[i].best_consume / 3600, (int)m_ranklist[i].best_consume % 3600 / 60, (int)m_ranklist[i].best_consume % 60);

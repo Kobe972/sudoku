@@ -39,11 +39,21 @@ bool SendData(const char* buf, int buf_length)
 DWORD WINAPI CreateCilent(LPVOID)
 {
 	char buf[300];
+	clock_t last_bump_time = clock();
 	while (1)
 	{
+		if (clock() - last_bump_time >= 2000)
+		{
+			last_bump_time = clock();
+			Msg Tmesssage;
+			Tmesssage.ID = BUMP;
+			g_Send.push(Tmesssage);
+		}
 		Send();
 		if (recv(g_connSocket, buf, sizeof(buf), 0) > 0)
 			g_Recv.push(StringToMsg(buf));
+		WSASetLastError(0);
+		recv(g_connSocket, buf, 1, MSG_PEEK);
 		bool is_ok = (WSAECONNRESET != WSAGetLastError());
 		if (!is_ok)
 		{
