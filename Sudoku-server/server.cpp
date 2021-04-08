@@ -384,27 +384,21 @@ void Process(Msg message, int src)
 		Send_Rank(src);
 		break;
 	case CHANGE:
-		if (player[src].is_host&&player[src].state==WAITING)
+		player[src].is_host = 0;
+		rooms[player[src].room].del(player[src]);
+		//更换房主或清空房间
+		if (rooms[player[src].room].m_players.size() != 0)
 		{
-			player[src].is_host = 0;
-			rooms[player[src].room].del(player[src]);
-			strcpy(player[src].name, "Tourist");
-			//更换房主或清空房间
-			if (rooms[player[src].room].m_players.size() != 0)
-			{
-				mes.ID = CHANGE;
-				strcpy(mes.string1, rooms[player[src].room].m_players[0].name);
-				rooms[player[src].room].m_players[0].is_host = 1;
-				rooms[player[src].room].host = rooms[player[src].room].m_players[0];
-				rooms[player[src].room].inform(mes);
-			}
-			else rooms[player[src].room].occupied = 0;
+			mes.ID = CHANGE;
+			strcpy(mes.string1, rooms[player[src].room].m_players[0].name);
+			rooms[player[src].room].m_players[0].is_host = 1;
+			player[rooms[player[src].room].m_players[0].ID].is_host = 1;
+			rooms[player[src].room].host = rooms[player[src].room].m_players[0];
+			rooms[player[src].room].inform(mes);
 		}
-		else
-		{
-			rooms[player[src].room].del(player[src]);
-		}
-		break;
+		else rooms[player[src].room].occupied = 0;
+		player[src].room = 0;
+	break;
 	case BUMP:
 		player[src].last_bump_time = clock();
 		break;
