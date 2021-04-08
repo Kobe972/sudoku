@@ -697,6 +697,7 @@ void CGame::Create_Sudoku()
 
 void CGame::SinglePlay()
 {
+    
     Sudoku.CheckFocus();
     Sudoku.Draw();
     button[IANSWER].Draw();
@@ -1050,6 +1051,7 @@ void CGame::ProcessSerMessage()
                 Sudoku.start_time = clock();
                 memset(Sudoku.m_Sudoku, 0, sizeof(Sudoku.m_Sudoku));
                 memset(Sudoku.m_const, 0, sizeof(Sudoku.m_const));
+                memset(Sudoku.g_mode, 0, sizeof(Sudoku.g_mode));
                 joined = Tmessage.num[1];
                 int first = 1;
                 Sudoku.m_difficulty = Tmessage.num[0];
@@ -1069,7 +1071,7 @@ void CGame::ProcessSerMessage()
                             {
                                 Sudoku.focus.x = j;
                                 Sudoku.focus.y = i;
-                                first = 1;
+                                first = 0;
                             }
                         }
                     }
@@ -1114,6 +1116,7 @@ void CGame::ProcessSerMessage()
                 is_host = 1;
                 if (m_eGameState == WAIT_FOR_BEGINNING) SetGameState(WAIT_TO_BEGIN);
             }
+            joined--;
             break;
         default:
             break;
