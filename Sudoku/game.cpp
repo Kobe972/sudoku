@@ -35,6 +35,7 @@ void CGame::GameInit()
     button[ICREATE].Create(ICREATE, 271, 63, 264, 400, "create");
     button[IBEGIN].Create(IBEGIN, 217, 63, 292, 400, "begin");
     button[IRANK].Create(IRANK, 80, 80, 30, 10, "rank");
+    button[ICANDIDATE].Create(ICANDIDATE, 80, 80, 695, 260, "candidate");
     inputbox[IIPBOX].Create(IIPBOX, 250, 25, 80, 250, false);
     inputbox[IPASSWORD].Create(IPASSWORD, 250, 25, 80, 350, true);
     inputbox[IROOMBOX].Create(IROOMBOX, 250, 25, 80, 300, false);
@@ -339,6 +340,13 @@ void CGame::ProcessButtonMsg()
                 SetGameState(ANSWER);
             button[IANSWER].m_state = BSTATENORMAL;
         }
+        button[ICANDIDATE].Check();
+        if (button[ICANDIDATE].m_state == BSTATEUP)
+        {
+            if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
+            FillCandidate();
+            button[ICANDIDATE].m_state = BSTATENORMAL;
+        }
         if (ButtonReturn())
         {
             if (IDYES == MessageBox(main_window_handle, "Are you sure to give up?", "Attention", MB_YESNO))
@@ -573,6 +581,13 @@ void CGame::ProcessButtonMsg()
             Tmessage.ID = CHANGE;
             g_Send.push(Tmessage);
             is_host = 0;
+            button[IANSWER].m_state = BSTATENORMAL;
+        }
+        button[ICANDIDATE].Check();
+        if (button[ICANDIDATE].m_state == BSTATEUP)
+        {
+            if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
+            FillCandidate();
             button[IANSWER].m_state = BSTATENORMAL;
         }
         if (ButtonReturn()) {
@@ -1367,4 +1382,39 @@ void CGame::ShowRank()
         lpddsback->ReleaseDC(CurText.hdc);
     }
     return;
+}
+
+void CGame::FillCandidate()
+{
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            FillCandidate(i, j);
+        }
+    }
+}
+
+void CGame::FillCandidate(int i, int j)
+{
+    if (Sudoku.g_mode[i][j]==0&&Sudoku.m_Sudoku[i][j] != 0) return;
+    Sudoku.g_mode[i][j] = 1;
+    int start_i = i / 3 * 3;
+    int start_j = j / 3 * 3;
+    for (int i2 = 1; i2 <= 9; i2++)
+    {
+        Sudoku.m_small[i][j][i2] = 1;
+    }
+    for (int i2 = start_i; i2 < start_i + 3; i2++)
+    {
+        for (int j2 = start_j; j2 < start_j + 3; j2++)
+        {
+            if(Sudoku.g_mode[i2][j2]==0) Sudoku.m_small[i][j][Sudoku.m_Sudoku[i2][j2]] = 0;
+        }
+    }
+    for (int i2 = 0; i2 < 9; i2++)
+    {
+        if (Sudoku.g_mode[i2][j] == 0) Sudoku.m_small[i][j][Sudoku.m_Sudoku[i2][j]] = 0;
+        if (Sudoku.g_mode[i][i2] == 0) Sudoku.m_small[i][j][Sudoku.m_Sudoku[i][i2]] = 0;
+    }
 }

@@ -102,6 +102,8 @@ public:
 	void WaitToBegin();
 	void WaitForBeginning();
 	void ShowRank();
+	void FillCandidate();
+	void FillCandidate(int i,int j); //fill candidate numbers automatically
 private:
 	HWND m_hWnd;
 	CSudoku Sudoku;

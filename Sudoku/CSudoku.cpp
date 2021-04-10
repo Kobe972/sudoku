@@ -305,6 +305,7 @@ void CSudoku::Draw()
 	DDraw_Draw_Bitmap(bitmap, lpddsback, { 0,0 });
 	bitmap->Unload_File();
 	button[IRETURN].Draw();
+	button[ICANDIDATE].Draw();
 	char out[50];
 	CFont CurText;
 	//»æÖÆÍø¸ñ

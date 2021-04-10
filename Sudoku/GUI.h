@@ -15,6 +15,7 @@
 #define ICREATE 10
 #define IJOIN 11
 #define IBEGIN 12
+#define ICANDIDATE 13
 
 
 //button states
