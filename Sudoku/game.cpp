@@ -396,7 +396,11 @@ void CGame::ProcessButtonMsg()
             if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
             Msg Tmessage;
             Tmessage.ID = LOG;
-            if(strlen(inputbox[IIPBOX].m_input)<=21&&strlen(inputbox[IPASSWORD].m_input)<=21)
+            if (strlen(inputbox[IIPBOX].m_input) <= 1 || strlen(inputbox[IPASSWORD].m_input) <= 1)
+            {
+                MessageBox(main_window_handle, "Your username and password can't be empty!", "Error", MB_OK);
+            }
+            else if(strlen(inputbox[IIPBOX].m_input)<=21&&strlen(inputbox[IPASSWORD].m_input)<=21)
             { 
                 inputbox[IIPBOX].Load(Tmessage.string1);
                 inputbox[IPASSWORD].Load(Tmessage.string2);
@@ -426,7 +430,11 @@ void CGame::ProcessButtonMsg()
         if (button[IOK].m_state == BSTATEUP)
         {
             if (!g_IsSilent) mciSendString("play .\\Sounds\\click\\0.wav", NULL, 0, NULL);
-            if (strlen(inputbox[IIPBOX].m_input) <= 21 && strlen(inputbox[IPASSWORD].m_input) <= 21)
+            if (strlen(inputbox[IIPBOX].m_input) <= 1 || strlen(inputbox[IPASSWORD].m_input) <= 1)
+            {
+                MessageBox(main_window_handle, "Your username and password can't be empty!", "Error", MB_OK);
+            }
+            else if (strlen(inputbox[IIPBOX].m_input) <= 21 && strlen(inputbox[IPASSWORD].m_input) <= 21)
             {
                 Msg Tmessage;
                 Tmessage.ID = REG;
