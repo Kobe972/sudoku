@@ -1,16 +1,10 @@
 #include "GUI.h"
-#define TEST_KBD(id,ch) else if (keyboard_state[id] & 0x80 &&!(keyboard_state[DIK_LSHIFT]&80||keyboard_state[DIK_RSHIFT]&80)&& next_available[id]&&strlen(m_input)<21)\
+#define TEST_KBD(id,ch) else if ((keyboard_state[id] & 0x80) && next_available[id]&&strlen(m_input)<21)\
 {\
 next_available[id] = 0;\
 last_inputs.push_back(id);\
-m_input[strlen(m_input) - 1] = ch;\
-}\
-else if(keyboard_state[DIK_LSHIFT]&& next_available[id] && strlen(m_input)<50)\
-{\
-next_available[id] = 0; \
-last_inputs.push_back(id); \
-m_input[strlen(m_input) - 1] = toupper(ch); \
- }
+m_input[strlen(m_input) - 1] = (keyboard_state[DIK_LSHIFT]&0x80|keyboard_state[DIK_RSHIFT]&0x80)?toupper(ch):ch;\
+}
 EXTERN_BOB_OBJECTS()
 CButton button[20];
 CCheckBox checkbox[20];
