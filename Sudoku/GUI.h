@@ -1,6 +1,8 @@
 #pragma once
 #include "GameEntry.h"
 #include"BobClass.h"
+#include<vector>
+using namespace std;
 //button ID
 #define ISINGLE_MODE 0
 #define IHELP 1
@@ -82,10 +84,9 @@ public:
 	int m_Width, m_Height;
 	bool m_activated = false;
 	char m_input[50];
-	char m_last_input = 0;
 	int m_ID;
-	clock_t m_last_input_time;
-
+	vector<int> last_inputs;
+	int next_available[256];
 public:
 	void Draw();
 	void Check();

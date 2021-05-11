@@ -31,6 +31,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -103,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +151,7 @@
     <ClInclude Include="generator.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="T3DLIB2.h" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +163,12 @@
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="sudoku.cpp" />
     <ClCompile Include="T3DLIB2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Sudoku.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\LENOVO\Desktop\Sudoku.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
